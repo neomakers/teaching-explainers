@@ -20,6 +20,14 @@
   .card h3{font-size:19px;color:var(--navy);margin:10px 0 6px}
   .card p{color:var(--ink2);font-size:14px;margin:0 0 12px}
   .card .meta{font-size:12.5px;color:#78899b;border-top:1px solid var(--line);padding-top:10px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12.5px;color:var(--ink2)}
+  .chip b{color:var(--navy);font-weight:600}
+  .ideas{background:#fff;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:16px 20px;margin:8px 0 26px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  .ideas .t{font-weight:650;color:var(--navy);font-size:15px}
+  .ideas .d{font-size:13px;color:var(--ink2);margin-top:2px}
+  .ideas a{color:var(--blue);text-decoration:none;font-size:13.5px;white-space:nowrap}
+  .ideas a:hover{text-decoration:underline}
   .note{background:#fff;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:0 9px 9px 0;padding:14px 18px;margin-top:26px;font-size:13.5px;color:var(--ink2)}
   .note b{color:var(--navy)}
   footer{border-top:1px solid var(--line);text-align:center;padding:20px;color:#78899b;font-size:12.5px}
@@ -30,9 +38,21 @@
 <header>
   <div class="k">Teaching Explainers</div>
   <h1>教学原理讲解页</h1>
-  <p>面向智能制造、机器人、计算机视觉与 AI 教学的交互式原理讲解合集。每篇均为单文件 HTML，零外部依赖，可离线打开，含可操作演示。</p>
+  <p>面向智能制造、机器人、计算机视觉与 AI 教学的交互式原理讲解与灵感速记合集。每篇讲解页均为单文件 HTML，零外部依赖，可离线打开，含可操作演示。</p>
 </header>
 <main>
+  <h2>分类体系</h2>
+  <div class="chips">
+    <span class="chip"><b>computer-vision</b> 计算机视觉</span>
+    <span class="chip"><b>robotics</b> 机器人</span>
+    <span class="chip"><b>additive-manufacturing</b> 增材制造</span>
+    <span class="chip"><b>ai-deployment</b> AI 部署</span>
+    <span class="chip"><b>embodied-ai</b> 具身智能</span>
+    <span class="chip"><b>programming-fundamentals</b> 程序设计基础</span>
+    <span class="chip"><b>control-and-sensing</b> 控制与感知</span>
+    <span class="chip"><b>teaching-methods</b> 教学法与课程</span>
+  </div>
+
   <h2>已收录讲解</h2>
 
   <a class="card" href="computer-vision/aruco-marker-principles.html">
@@ -42,9 +62,18 @@
     <div class="meta">单文件 HTML · 4 组交互 · 依据 OpenCV 4.x 官方文档 · 更新于 2026-11-06</div>
   </a>
 
+  <h2>灵感速记</h2>
+  <div class="ideas">
+    <div>
+      <div class="t">ideas/INDEX.md · 当前 0 条</div>
+      <div class="d">未成形的 idea 与案例按同一分类体系打标暂存，成熟后升级为讲解页。</div>
+    </div>
+    <a href="ideas/INDEX.md">查看速记 →</a>
+  </div>
+
   <div class="note">
-    <b>归档约定</b>：按主题分目录（<code>computer-vision/</code>、<code>robotics/</code>、<code>additive-manufacturing/</code>、<code>ai-deployment/</code>）。新增讲解页时同步更新仓库 README 的索引表与本页卡片。<br>
-    <b>说明</b>：页内演示字典为教学用简化模型，非 OpenCV 预定义字典；演示用于说明机理，不作检测率或测量精度依据。
+    <b>归档约定</b>：主分类按核心知识点判定，交叉主题在索引备注标注；轻量 idea 默认只记一行到 <code>ideas/INDEX.md</code>，成熟主题才做单文件 HTML 讲解页。新增讲解页时同步更新仓库 <code>README.md</code> 索引表与本页卡片。<br>
+    <b>说明</b>：讲解页中的演示使用教学用简化模型，非官方实现；用于说明机理，不作检测率或测量精度依据。具体边界见各页底部声明。
   </div>
 </main>
 <footer>neomakers / teaching-explainers · 单文件离线页面合集</footer>
