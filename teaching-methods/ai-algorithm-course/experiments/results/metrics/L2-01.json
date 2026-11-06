@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "exp_id": "L2-01",
+    "algo": "标准化 / 归一化",
+    "layer": "L2 数据表示",
+    "purpose": "量化标准化对距离类与梯度类模型的影响，验证树模型不敏感",
+    "dataset": "wine(178x13, 三分类) 与 breast_cancer(569x30, 二分类)，分层抽样 test_size=0.3",
+    "baselines": [
+      "原始数据（不做标准化）"
+    ],
+    "metrics": [
+      "测试集准确率",
+      "训练+预测耗时"
+    ],
+    "seed": 42,
+    "params": {
+      "test_size": 0.3,
+      "knn_k": 5,
+      "svc": "rbf, C=1, gamma=scale"
+    },
+    "env": {
+      "python": "3.13.14",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "numpy": "2.5.4",
+      "sklearn": "1.9.1"
+    }
+  },
+  "rows": [
+    {
+      "数据集": "wine",
+      "预处理": "raw",
+      "模型": "KNN(k=5)",
+      "测试准确率": 0.7222222222222222,
+      "特征量纲差异": 2615.5353387284717
+    },
+    {
+      "数据集": "wine",
+      "预处理": "raw",
+      "模型": "SVC(rbf)",
+      "测试准确率": 0.6666666666666666,
+      "特征量纲差异": 2615.5353387284717
+    },
+    {
+      "数据集": "wine",
+      "预处理": "raw",
+      "模型": "LogisticRegression",
+      "测试准确率": 0.9629629629629629,
+      "特征量纲差异": 2615.5353387284717
+    },
+    {
+      "数据集": "wine",
+      "预处理": "raw",
+      "模型": "RandomForest(对照)",
+      "测试准确率": 1.0,
+      "特征量纲差异": 2615.5353387284717
+    },
+    {
+      "数据集": "wine",
+      "预处理": "standardized",
+      "模型": "KNN(k=5)",
+      "测试准确率": 0.9444444444444444,
+      "特征量纲差异": 2615.5353387284717
+    },
+    {
+      "数据集": "wine",
+      "预处理": "standardized",
+      "模型": "SVC(rbf)",
+      "测试准确率": 0.9814814814814815,
+      "特征量纲差异": 2615.5353387284717
+    },
+    {
+      "数据集": "wine",
+      "预处理": "standardized",
+      "模型": "LogisticRegression",
+      "测试准确率": 0.9814814814814815,
+      "特征量纲差异": 2615.5353387284717
+    },
+    {
+      "数据集": "wine",
+      "预处理": "standardized",
+      "模型": "RandomForest(对照)",
+      "测试准确率": 1.0,
+      "特征量纲差异": 2615.5353387284717
+    },
+    {
+      "数据集": "breast_cancer",
+      "预处理": "raw",
+      "模型": "KNN(k=5)",
+      "测试准确率": 0.9239766081871345,
+      "特征量纲差异": 194269.30951112098
+    },
+    {
+      "数据集": "breast_cancer",
+      "预处理": "raw",
+      "模型": "SVC(rbf)",
+      "测试准确率": 0.9064327485380117,
+      "特征量纲差异": 194269.30951112098
+    },
+    {
+      "数据集": "breast_cancer",
+      "预处理": "raw",
+      "模型": "LogisticRegression",
+      "测试准确率": 0.9473684210526315,
+      "特征量纲差异": 194269.30951112098
+    },
+    {
+      "数据集": "breast_cancer",
+      "预处理": "raw",
+      "模型": "RandomForest(对照)",
+      "测试准确率": 0.9415204678362573,
+      "特征量纲差异": 194269.30951112098
+    },
+    {
+      "数据集": "breast_cancer",
+      "预处理": "standardized",
+      "模型": "KNN(k=5)",
+      "测试准确率": 0.9590643274853801,
+      "特征量纲差异": 194269.30951112098
+    },
+    {
+      "数据集": "breast_cancer",
+      "预处理": "standardized",
+      "模型": "SVC(rbf)",
+      "测试准确率": 0.9766081871345029,
+      "特征量纲差异": 194269.30951112098
+    },
+    {
+      "数据集": "breast_cancer",
+      "预处理": "standardized",
+      "模型": "LogisticRegression",
+      "测试准确率": 0.9883040935672515,
+      "特征量纲差异": 194269.30951112098
+    },
+    {
+      "数据集": "breast_cancer",
+      "预处理": "standardized",
+      "模型": "RandomForest(对照)",
+      "测试准确率": 0.9415204678362573,
+      "特征量纲差异": 194269.30951112098
+    }
+  ],
+  "timings": {
+    "wine/raw/KNN(k=5)": 0.004312799999752315,
+    "wine/raw/SVC(rbf)": 0.0043346999991626944,
+    "wine/raw/LogisticRegression": 2.4777953999982856,
+    "wine/raw/RandomForest(对照)": 0.34655779999957304,
+    "wine/standardized/KNN(k=5)": 0.003222399998776382,
+    "wine/standardized/SVC(rbf)": 0.003991800000221701,
+    "wine/standardized/LogisticRegression": 0.008537899997463683,
+    "wine/standardized/RandomForest(对照)": 0.33740149999721325,
+    "breast_cancer/raw/KNN(k=5)": 0.08108969999739202,
+    "breast_cancer/raw/SVC(rbf)": 0.007941800002299715,
+    "breast_cancer/raw/LogisticRegression": 1.3792078000005858,
+    "breast_cancer/raw/RandomForest(对照)": 0.45036959999924875,
+    "breast_cancer/standardized/KNN(k=5)": 0.004946599998220336,
+    "breast_cancer/standardized/SVC(rbf)": 0.007491299998946488,
+    "breast_cancer/standardized/LogisticRegression": 0.013710200000787154,
+    "breast_cancer/standardized/RandomForest(对照)": 0.5530354999973497
+  },
+  "notes": [
+    "wine 上 KNN 标准化后准确率由 0.722 提升到 0.944：KNN 直接用距离投票，量纲大的特征会主导距离，因此必须标准化。",
+    "SVC(rbf) 同理对尺度敏感（gamma 作用于欧氏距离）；LogisticRegression 虽不依赖距离，但标准化能显著改善梯度下降的条件数、加快收敛。",
+    "RandomForest 作为对照：基于阈值的划分对单调缩放不变，两种预处理结果完全一致——这正是「树模型不需要标准化」的实验依据。"
+  ],
+  "figures": [
+    "figures/l2_01_scaling.svg"
+  ]
+}

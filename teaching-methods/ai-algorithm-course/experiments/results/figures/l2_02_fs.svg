@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img">
+<title>特征选择方法对比（breast_cancer）</title>
+<rect x="0" y="0" width="720" height="340" fill="#ffffff"/>
+<text x="16" y="26" font-family="system-ui,sans-serif" font-size="14" fill="#2c2c2a">特征选择方法对比（breast_cancer）</text>
+<line x1="50" x2="696" y1="280.0" y2="280.0" stroke="#e3e1da"/>
+<text x="46" y="284.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0</text>
+<line x1="50" x2="696" y1="222.0" y2="222.0" stroke="#e3e1da"/>
+<text x="46" y="226.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.25</text>
+<line x1="50" x2="696" y1="164.0" y2="164.0" stroke="#e3e1da"/>
+<text x="46" y="168.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.499</text>
+<line x1="50" x2="696" y1="106.0" y2="106.0" stroke="#e3e1da"/>
+<text x="46" y="110.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.749</text>
+<line x1="50" x2="696" y1="48.0" y2="48.0" stroke="#e3e1da"/>
+<text x="46" y="52.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.998</text>
+<rect x="70.1" y="50.3" width="49.9" height="229.7" fill="#185fa5"/>
+<rect x="120.0" y="48.0" width="49.9" height="232.0" fill="#0f6e56"/>
+<text x="120.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">全部特征（基线）</text>
+<rect x="198.1" y="62.5" width="49.9" height="217.5" fill="#185fa5"/>
+<rect x="248.0" y="51.9" width="49.9" height="228.1" fill="#0f6e56"/>
+<text x="248.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">过滤法 SelectKBest(f_classif)</text>
+<rect x="326.1" y="54.4" width="49.9" height="225.6" fill="#185fa5"/>
+<rect x="376.0" y="49.3" width="49.9" height="230.7" fill="#0f6e56"/>
+<text x="376.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">包裹法 RFE(逻辑回归)</text>
+<rect x="454.1" y="54.4" width="49.9" height="225.6" fill="#185fa5"/>
+<rect x="504.0" y="50.5" width="49.9" height="229.5" fill="#0f6e56"/>
+<text x="504.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">嵌入法 L1 逻辑回归(C=0.05)</text>
+<rect x="582.1" y="55.7" width="49.9" height="224.3" fill="#185fa5"/>
+<rect x="632.0" y="48.3" width="49.9" height="231.7" fill="#0f6e56"/>
+<text x="632.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">随机选 10 个（对照）</text>
+<line x1="50" x2="696" y1="280" y2="280" stroke="#b4b2a9"/>
+<rect x="50" y="314" width="10" height="10" fill="#185fa5"/>
+<text x="64" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">测试准确率</text>
+<rect x="109" y="314" width="10" height="10" fill="#0f6e56"/>
+<text x="123" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">AUC</text>
+<text x="14" y="40" font-family="system-ui,sans-serif" font-size="11" fill="#888780">指标值</text>
+</svg>

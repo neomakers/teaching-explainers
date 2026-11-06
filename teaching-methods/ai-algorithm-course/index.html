@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《人工智能技术及应用》课程资源包</title>
+<style>
+:root{--bg:#f6f8fb;--ink:#1c2733;--ink2:#4a5a6b;--line:#e2e8f0;--navy:#17365c;--blue:#2563eb;--soft:#eaf1ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+header{background:linear-gradient(120deg,#17365c 0%,#24518a 100%);color:#fff;padding:38px 24px 32px}
+.k{font-size:12px;letter-spacing:.18em;color:#b8d2f5;font-weight:600}
+h1{font-size:27px;margin:10px 0 6px}
+header p{margin:0;color:#d5e4f8;max-width:800px}
+main{max-width:940px;margin:0 auto;padding:30px 24px 70px}
+h2{font-size:17px;color:var(--navy);margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.hero{background:#fff;border:1px solid var(--line);border-radius:11px;padding:20px 22px;margin-bottom:8px}
+.btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:600;margin:6px 10px 6px 0;font-size:14px}
+.btn.sec{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.c{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.c b{color:var(--navy)}
+.c a{color:var(--blue);text-decoration:none;word-break:break-all}
+.c a:hover{text-decoration:underline}
+.c p{margin:4px 0 0;font-size:13px;color:var(--ink2)}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+th{background:#f2f6fc;color:var(--navy)}
+code{font-family:Consolas,Menlo,monospace;font-size:.9em;background:#f3f6fa;border:1px solid var(--line);padding:1px 5px;border-radius:4px}
+.note{background:#fff;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:15px 19px;font-size:13.5px;color:var(--ink2)}
+.note b{color:var(--navy)}
+img{max-width:100%;border:1px solid var(--line);border-radius:8px}
+footer{border-top:1px solid var(--line);text-align:center;padding:20px;color:#78899b;font-size:12.5px}
+</style>
+</head>
+<body>
+<header>
+  <div class="k">Teaching Explainers / Teaching Methods</div>
+  <h1>《人工智能技术及应用》课程资源包</h1>
+  <p>智能制造类本科课程 · 30 个算法交互演示 + 30 个可复现 Python 实验 + 分组选题与难度系数评价体系。网页全部为单文件离线 HTML，双击即可打开。</p>
+</header>
+<main>
+  <div class="hero">
+    <a class="btn" href="../ai-algorithm-course.html">打开课程平台（推荐）</a>
+    <a class="btn sec" href="ai-algorithm-course.zip">下载全套 ZIP</a>
+    <p style="margin:8px 0 0;font-size:13.5px;color:var(--ink2)">课程平台是<strong>自包含单文件</strong>（约 960 KB）：顶层 4 个模块 —— 算法大纲（内含原有 7 个标签）、分组选题、项目任务书、难度系数表；零外部依赖、断网可用。</p>
+  </div>
+
+  <h2>一、独立网页（可单独打开）</h2>
+  <div class="grid">
+    <div class="c"><b>交互大纲 · 30 个演示</b><p><a href="outline-interactive.html">outline-interactive.html</a> — 8 层 30 算法，每个条目内嵌画布 + 滑块 + KPI + 动态解读。</p></div>
+    <div class="c"><b>分组选题系统</b><p><a href="topic-picker.html">topic-picker.html</a> — 难度系数卡片、登记表单、教师看板、撞题检测、localStorage 持久化。</p></div>
+    <div class="c"><b>项目任务书</b><p><a href="project-brief.html">project-brief.html</a> — 分工、交付清单、5 周里程碑、AI 使用声明、rubric。</p></div>
+    <div class="c"><b>学生实验指导书</b><p><a href="lab-guide.html">lab-guide.html</a> — 30 个实验的操作说明与报告模板。</p></div>
+    <div class="c"><b>实验结果报告</b><p><a href="experiment-report.html">experiment-report.html</a> — 30 个实验的数值、表格与 SVG 图汇总。</p></div>
+  </div>
+
+  <h2>二、课程文档（Markdown）</h2>
+  <table>
+    <tr><th>文件</th><th>内容</th></tr>
+    <tr><td><a href="docs/course-outline.md">docs/course-outline.md</a></td><td>算法大纲、课时分配、实验清单、考核方式</td></tr>
+    <tr><td><a href="docs/lab-guide.md">docs/lab-guide.md</a></td><td>实验指导书源文件</td></tr>
+    <tr><td><a href="docs/project-brief.md">docs/project-brief.md</a></td><td>项目任务书源文件</td></tr>
+    <tr><td><a href="docs/difficulty-table.md">docs/difficulty-table.md</a></td><td>30 算法五维难度评分、系数换算表、逐题建议</td></tr>
+    <tr><td><a href="experiments/results/REPORT.md">experiments/results/REPORT.md</a></td><td>实验报告 Markdown 源文件</td></tr>
+  </table>
+
+  <h2>三、配套程序</h2>
+  <div class="grid">
+    <div class="c"><b>30 个 Python 实验</b><p><code>experiments/exp_l*_*.py</code> — 统一 <code>SEED=42</code>、<code>main(seed)</code> 四段模板；<code>python experiments/run_all.py</code> 一键复现。</p></div>
+    <div class="c"><b>公共模块</b><p><code>experiments/common/</code>（离线数据集、IO、runner）与 <code>experiments/fromscratch/</code>（7 个 numpy 手写实现）。</p></div>
+    <div class="c"><b>实验产物</b><p><code>experiments/results/metrics/</code> 30 个 JSON、<code>figures/</code> 33 张 SVG、<code>tables/</code> 明细表。</p></div>
+    <div class="c"><b>构建与验收工具</b><p><code>tools/</code> — 合并构建、难度系数数据源、演示注入、语法检查与 Playwright 验收脚本。</p></div>
+  </div>
+  <p style="font-size:13.5px;color:var(--ink2)">Python 依赖：<code>numpy</code> / <code>scikit-learn</code> / <code>matplotlib</code>（实验脚本），网页本身无需任何安装。</p>
+
+  <h2>四、页面预览</h2>
+  <p><img src="previews/merged-algo.png" alt="课程平台算法大纲模块"><br>
+     <img src="previews/merged-pick.png" alt="课程平台分组选题模块"></p>
+
+  <h2>五、边界与说明</h2>
+  <div class="note">
+    <b>演示简化声明</b>：网页内的 30 个交互演示是浏览器内 JavaScript 实时计算的<strong>教学用简化模型</strong>，用于说明算法机理与参数影响，不是 sklearn / 工业库实现，不作精度、检测率或性能评测依据。数值真值以 <code>experiments/</code> 下 seed=42 的 Python 脚本结果为准，二者可互为对照。<br><br>
+    <b>文件名对照</b>：为适配 GitHub Pages，中文文件名已改为 ASCII kebab-case，文档正文中的引用已同步改写。构建脚本（<code>tools/build_merged.py</code> 等）内保留原始项目路径，需在原课程工作区运行；本仓库为其归档快照。<br><br>
+    <b>排除项</b>：<code>__pycache__/</code>、<code>*.pyc</code>、运行日志 <code>*.log</code> 未纳入归档。
+  </div>
+</main>
+<footer>neomakers / teaching-explainers · 归档于 2026-11-06</footer>
+</body>
+</html>

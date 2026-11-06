@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>《人工智能技术及应用》综合项目 · 分组选题系统</title>
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface2:#f1efe8;
+  --text:#2c2c2a; --text2:#5f5e5a; --text3:#888780;
+  --line:#e3e1da; --line2:#d3d1c7;
+  --blue:#185fa5; --blue-bg:#e6f1fb; --blue-bg2:#b5d4f4; --blue-dk:#042c53;
+  --teal:#0f6e56; --teal-bg:#e1f5ee;
+  --amber:#854f0b; --amber-bg:#faeeda;
+  --red:#a32d2d; --red-bg:#fceceb;
+  --purple:#5b4bb7; --purple-bg:#eeedfb;
+  --radius:12px;
+  --dM:#185fa5; --dC:#0f6e56; --dV:#ba7517; --dA:#5b4bb7; --dR:#a32d2d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px 80px}
+header{background:var(--surface);border-bottom:1px solid var(--line)}
+.hd-in{max-width:1160px;margin:0 auto;padding:16px 20px}
+.hd-in h1{font-size:20px;font-weight:500}
+.hd-in .sub{font-size:12.5px;color:var(--text2);margin-top:2px}
+.hd-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+h2{font-size:15px;font-weight:500;margin:26px 0 10px;padding-left:2px}
+h2 .cnt{font-size:12px;color:var(--text3);font-weight:400;margin-left:6px}
+
+/* 工具条 */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 6px}
+.toolbar input{flex:1;min-width:220px;padding:9px 14px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;background:var(--surface);color:var(--text)}
+.toolbar input:focus{outline:2px solid var(--blue-bg2);border-color:var(--blue)}
+.chip{background:var(--surface);border:1px solid var(--line2);color:var(--text2);padding:6px 12px;border-radius:999px;font-size:12px;cursor:pointer;font-family:inherit}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn{background:var(--blue);border:1px solid var(--blue);color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer}
+.btn.ghost{background:var(--surface);color:var(--text2);border:1px solid var(--line2)}
+.btn.ghost:hover{border-color:var(--blue);color:var(--blue)}
+select{padding:7px 10px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:12.5px;background:var(--surface);color:var(--text)}
+.sw{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text2);cursor:pointer;user-select:none}
+
+/* 看板 */
+.board{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-top:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.board.hide{display:none}
+.bstats{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px}
+.bstat{font-size:12.5px;color:var(--text2)}
+.bstat b{font-size:19px;color:var(--text);font-weight:500;margin-right:4px}
+.tierbar{display:flex;gap:4px;height:26px;margin:6px 0 12px}
+.tierbar div{flex:1;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:#fff;border-radius:5px;position:relative;min-width:0;overflow:hidden}
+.tierbar .A{background:var(--teal)} .tierbar .B{background:var(--blue)}
+.tierbar .C{background:var(--amber)} .tierbar .D{background:var(--red)}
+.gl{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:8px}
+.gi{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface2);font-size:12px}
+.gi.done{background:var(--teal-bg);border-color:#9ad3bd}
+.gi.conf{background:var(--red-bg);border-color:#f0b4b1}
+.gi b{font-weight:500}
+.gi .m{color:var(--text2);font-size:11.5px;word-break:break-all}
+.gi .lk{float:right;cursor:pointer;color:var(--text3)}
+
+/* 卡片 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:12px;margin-top:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;display:flex;flex-direction:column;gap:7px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.card.t-A{border-left:3px solid var(--teal)}
+.card.t-B{border-left:3px solid var(--blue)}
+.card.t-C{border-left:3px solid var(--amber)}
+.card.t-D{border-left:3px solid var(--red)}
+.card.locked{opacity:.5;filter:grayscale(.6)}
+.card.full{border-color:var(--red-bg2,var(--red))}
+.c-top{display:flex;align-items:baseline;gap:7px}
+.c-id{font-size:11px;color:var(--text3);font-family:ui-monospace,Consolas,monospace}
+.c-star{color:var(--amber);font-size:12px}
+.c-k{margin-left:auto;font-size:19px;font-weight:600;letter-spacing:-.5px;line-height:1}
+.c-k small{font-size:10px;color:var(--text3);font-weight:400;margin-left:2px}
+.card h3{font-size:14.5px;font-weight:500;line-height:1.35}
+.card h3 .lt{display:block;font-size:11px;color:var(--text3);font-weight:400;margin-top:2px}
+.dims{display:flex;gap:6px;align-items:flex-end;height:32px;margin:2px 0}
+.dim{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.dim .track{width:100%;height:22px;display:flex;align-items:flex-end;background:var(--surface2);border-radius:3px;overflow:hidden}
+.dim .track i{display:block;width:100%;border-radius:0 0 3px 3px}
+.dim b{font-size:9.5px;color:var(--text3);font-weight:400}
+.dM{background:var(--dM)} .dC{background:var(--dC)} .dV{background:var(--dV)}
+.dA{background:var(--dA)} .dR{background:var(--dR)}
+.c-meta{font-size:11.5px;color:var(--text2)}
+.c-meta .tag{display:inline-block;padding:1px 7px;border-radius:5px;font-size:10.5px;margin-right:5px}
+.tag.A{background:var(--teal-bg);color:var(--teal)}
+.tag.B{background:var(--blue-bg);color:var(--blue)}
+.tag.C{background:var(--amber-bg);color:var(--amber)}
+.tag.D{background:var(--red-bg);color:var(--red)}
+.c-scene{font-size:12px;color:var(--text2);line-height:1.55}
+.c-lab{font-size:10.5px;color:var(--text3);margin-top:2px}
+.c-lab ul{margin:0;padding-left:16px}
+.c-lab li{margin:1px 0}
+.c-pit{font-size:11.5px;color:var(--amber);background:var(--amber-bg);border-radius:7px;padding:5px 9px}
+.c-base{font-size:11.5px;color:var(--text2);border-left:2px solid var(--line2);padding-left:8px}
+.c-foot{margin-top:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--line)}
+.c-foot .used{font-size:11.5px;color:var(--text3)}
+.c-foot .used b{color:var(--text);font-weight:500}
+.c-foot .used.conf{color:var(--red)}
+.gtags{display:flex;gap:3px;flex-wrap:wrap}
+.gtag{font-size:10.5px;padding:1px 6px;border-radius:5px;background:var(--teal-bg);color:var(--teal)}
+.gtag.conf{background:var(--red-bg);color:var(--red)}
+.btn.pick{margin-left:auto;padding:5px 12px;font-size:12px}
+
+/* 弹层 */
+.mask{position:fixed;inset:0;background:rgba(20,20,18,.42);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.mask.hide{display:none}
+.modal{background:var(--surface);border-radius:var(--radius);padding:20px 22px;width:100%;max-width:540px;max-height:88vh;overflow:auto}
+.modal h3{font-size:16px;font-weight:500;margin-bottom:4px}
+.modal .hint{font-size:12px;color:var(--text2);margin-bottom:14px}
+.fld{margin-bottom:11px}
+.fld label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px}
+.fld input[type=text],.fld input[type=url],.fld select{width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:7px;font-family:inherit;font-size:13px;color:var(--text)}
+.fld input:focus{outline:2px solid var(--blue-bg2);border-color:var(--blue)}
+.fld .row{display:flex;gap:8px}
+.fld .row>*{flex:1}
+.aiopts{display:flex;gap:10px;flex-wrap:wrap}
+.aiopts label{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--text2);cursor:pointer}
+.m-act{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.warnbox{background:var(--red-bg);color:var(--red);font-size:12.5px;padding:8px 12px;border-radius:8px;margin-bottom:12px}
+.okbox{background:var(--teal-bg);color:var(--teal);font-size:12.5px;padding:8px 12px;border-radius:8px;margin-bottom:12px}
+
+.tip{background:var(--blue-bg);color:var(--blue-dk);font-size:12.5px;padding:9px 14px;border-radius:9px;margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tip b{font-weight:600}
+.empty{text-align:center;color:var(--text3);padding:40px 0;font-size:13px}
+footer{text-align:center;color:var(--text3);font-size:12px;margin-top:36px}
+code{background:var(--surface2);padding:1px 5px;border-radius:4px;font-size:12px;font-family:ui-monospace,Consolas,monospace}
+@media print{.toolbar,.c-foot .btn,.tip,nav,.hd-row{display:none!important}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd-in">
+    <h1>《人工智能技术及应用》综合项目 · 分组选题系统</h1>
+    <div class="sub">3 人一组，每组 1 题；同一算法最多 3 组。最终成绩 = min(100, 原始分 × 难度系数 K)</div>
+    <div class="hd-row">
+      <span class="chip" id="toggleBoard">教师视角看板</span>
+      <span class="chip" id="btnExpJson">导出 JSON</span>
+      <span class="chip" id="btnExpCsv">导出 CSV</span>
+      <span class="chip" id="btnExpMd">导出 Markdown</span>
+      <span class="chip" id="btnImp">导入 JSON</span>
+      <span class="chip" id="btnSkeleton">复制作品骨架代码</span>
+      <input type="file" id="fileImp" accept=".json" style="display:none">
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tip">
+    <b>本机暂存</b>：选题记录保存在浏览器 localStorage，换电脑或清缓存会丢失 ——
+    务必点右上角<b>导出 JSON</b> 保存，交给老师的文件以导出件为准。
+  </div>
+
+  <div class="board hide" id="board">
+    <div class="bstats" id="bstats"></div>
+    <div class="tierbar" id="tierbar"></div>
+    <div style="font-size:12.5px;color:var(--text2);margin-bottom:6px">各组选题情况</div>
+    <div class="gl" id="grouplist"></div>
+    <div style="margin-top:10px">
+      <span class="chip" id="btnCopyRepos">复制全部仓库地址</span>
+      <span class="chip" id="btnUnlockAll">解除全部锁定</span>
+      <span class="chip" id="btnClearAll">清空全部选题</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input id="q" placeholder="搜索算法名、应用场景、数据集、结论，例如：降维、缺陷检测、振动">
+    <span class="chip on" data-t="all">全部档位</span>
+    <span class="chip" data-t="A">A 基础</span>
+    <span class="chip" data-t="B">B 标准</span>
+    <span class="chip" data-t="C">C 进阶</span>
+    <span class="chip" data-t="D">D 挑战</span>
+    <span class="chip" data-l="all" style="display:none"></span>
+  </div>
+  <div class="toolbar">
+    <span class="chip" data-l="L1">L1 数学基础</span>
+    <span class="chip" data-l="L2">L2 数据表示</span>
+    <span class="chip" data-l="L3">L3 降维</span>
+    <span class="chip" data-l="L4">L4 监督学习</span>
+    <span class="chip" data-l="L5">L5 集成</span>
+    <span class="chip" data-l="L6">L6 聚类</span>
+    <span class="chip" data-l="L7">L7 深度学习</span>
+    <span class="chip" data-l="L8">L8 决策生成</span>
+    <select id="sort">
+      <option value="k">按难度 ↑</option>
+      <option value="kdesc">按难度 ↓</option>
+      <option value="id">按编号</option>
+      <option value="hours">按预估人时</option>
+      <option value="free">剩余名额多的在前</option>
+    </select>
+    <label class="sw"><input type="checkbox" id="onlyFree"> 仅看未满</label>
+  </div>
+
+  <h2 id="listTitle">选题列表<span class="cnt" id="listCnt"></span></h2>
+  <div class="grid" id="grid"></div>
+  <div class="empty hide" id="empty">没有匹配的选题，换个关键词试试。</div>
+
+  <footer>数据源 tools/difficulty.py · 共 30 个算法 · 难度系数 K ∈ [1.05, 1.50]</footer>
+</div>
+
+<div class="mask hide" id="mask">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const TOPICS = /*TOPICS:BEGIN*/[{"id":"L1-01","n":"奇异值分解 SVD","l":"L1","lt":"数学基础","star":1,"d":{"M":3,"C":3,"V":2,"A":2,"R":1},"hours":16,"exp":"exp_l1_01_svd.py","demo":1328,"datasets":["common/data.py::digits()"],"scene":"设备多通道振动信号/图像的特征压缩与去噪，工件图像的低秩重建","pitfalls":["直接对原始像素做特征分解会因大矩阵极慢，应走截断 SVD","协方差矩阵 A^T A 会丢失数值精度，优先 numpy.linalg.svd","重建误差随 k 下降但边际收益递减，必须画碎石图说明拐点"],"mustHave":["奇异值谱（碎石图）与累积能量曲线","拖动 k 实时对比原图/重建图/残差","与随机高斯投影同维度的误差对照（Eckart-Young 举证）"],"open":1,"cap":3,"note":"","S":2.3,"K":1.15,"tier":"B","baseline":"k=64 时相对误差降到 1.07e-14（可视为精确重建）；k=10 误差 24.7%，对应 4.8:1 压缩比；k=20 误差 14.7%。"},{"id":"L1-02","n":"特征值分解","l":"L1","lt":"数学基础","star":0,"d":{"M":2,"C":3,"V":1,"A":2,"R":1},"hours":12,"exp":"exp_l1_02_eig.py","demo":2280,"datasets":["common/data.py::corr_data()"],"scene":"主成分方差解释、结构模态分析中的特征模态","pitfalls":["非对称矩阵的特征值可能为复数，教学务必限定对称阵","Jacobi 旋转要设收敛阈值，否则演示会卡住","务必与 numpy.linalg.eigh 对照校验"],"mustHave":["2x2 对称矩阵元素可调输入框/滑块","单位圆在该矩阵作用下变形为椭圆","实时显示两个特征向量方向与特征值"],"open":1,"cap":3,"note":"","S":1.8,"K":1.1,"tier":"A","baseline":"特征值最大绝对差 2.09e-14、正交误差 1.91e-14，说明自实现 Jacobi 与 LAPACK 数值一致。"},{"id":"L1-03","n":"梯度下降族","l":"L1","lt":"数学基础","star":0,"d":{"M":3,"C":3,"V":2,"A":3,"R":1},"hours":18,"exp":"exp_l1_03_optimizer.py","demo":1615,"datasets":["合成二次型（可控条件数）"],"scene":"神经网络训练与损失曲面优化原理","pitfalls":["条件数大时 SGD 会震荡，演示必须可调条件数","学习率超过 2/L 必然发散，别让页面显示 Infinity，要做发散检测","Momentum/Adam 的偏置修正不能漏，否则前几步失真"],"mustHave":["同一损失曲面上三条优化轨迹同屏对比","学习率与条件数两个滑块","显示各优化器最终损失与是否发散"],"open":1,"cap":3,"note":"","S":2.45,"K":1.2,"tier":"B","baseline":"lr=0.05：4 种优化器全部收敛（最慢 adam 用 193 步），收敛步数排序：rmsprop(16) < momentum(63) < sgd(149) < adam(193)；最终损失均达到闭式解水平 0.246520。"},{"id":"L2-01","n":"标准化与归一化","l":"L2","lt":"数据表示","star":0,"d":{"M":1,"C":1,"V":2,"A":1,"R":1},"hours":8,"exp":"exp_l2_01_scaling.py","demo":2378,"datasets":["合成两维数据（量纲相差 100 倍）"],"scene":"多源传感器数据融合前的量纲统一","pitfalls":["必须在训练集 fit、测试集只 transform，否则数据泄露","MinMax 对离群点极敏感，要演示被单个异常值压扁的情形","树模型不需要标准化，要说清适用范围"],"mustHave":["四种变换方式可切换（Standard/MinMax/Robust/不处理）","显示标准化前后最近邻距离占比变化","含一个离群点开关，演示 MinMax 的脆弱性"],"open":1,"cap":3,"note":"","S":1.25,"K":1.05,"tier":"A","baseline":"wine 上 KNN 标准化后准确率由 0.722 提升到 0.944：KNN 直接用距离投票，量纲大的特征会主导距离，因此必须标准化。"},{"id":"L2-02","n":"特征选择","l":"L2","lt":"数据表示","star":0,"d":{"M":2,"C":2,"V":3,"A":2,"R":1},"hours":16,"exp":"exp_l2_02_featureselection.py","demo":3057,"datasets":["common/data.py::classification()","common/data.py::noisy_dims()"],"scene":"工艺关键参数识别、传感器布点优化","pitfalls":["过滤法打分要用训练集算，全量数据打分会虚高","准确率要留出验证集，用全量训练准确率等于造假","Lasso 的 alpha 与最终保留特征数要一并展示"],"mustHave":["特征得分排序条形图（含噪声特征）","随保留特征数 k 变化的验证准确率曲线（要出现先升后降）","过滤法与嵌入法（Lasso）结果对比"],"open":1,"cap":3,"note":"","S":2.1,"K":1.15,"tier":"B","baseline":"全量 30 特征准确率 0.9883；过滤法与包裹法保留 10 个特征后准确率分别为 0.9357 / 0.9708，精度损失 0.0526 / 0.0175（约 5.3 / 1.8 个百分点）——用 1/3 的传感器成本换取小幅精度下降，说明该数据集中确实存在冗余特征。"},{"id":"L3-01","n":"主成分分析 PCA","l":"L3","lt":"降维与矩阵分解","star":1,"d":{"M":3,"C":2,"V":2,"A":2,"R":1},"hours":14,"exp":"exp_l3_01_pca.py","demo":1359,"datasets":["common/data.py::wine()","common/data.py::synth_process()"],"scene":"多传感器信号融合降维、工艺参数压缩、工业数据去噪","pitfalls":["PCA 前必须标准化，否则大方差特征会主导","只能捕捉线性相关；对环形/月牙数据失效","主成分的物理含义需人工解释，不能自动赋予"],"mustHave":["方差解释率柱状图+累积曲线","散点图上画出 PC1/PC2 主方向箭头","拖动 k 看降维后重建误差与下游任务精度"],"open":1,"cap":3,"note":"","S":2.1,"K":1.15,"tier":"B","baseline":"自实现与 sklearn 的降维坐标最大差在 1e-6 量级以内（见表中「最大坐标差」列），两条实现路径（协方差特征分解 / 数据中心化后 SVD）数值等价。"},{"id":"L3-02","n":"线性判别分析 LDA","l":"L3","lt":"降维与矩阵分解","star":0,"d":{"M":4,"C":2,"V":2,"A":3,"R":1},"hours":18,"exp":"exp_l3_02_lda.py","demo":1359,"datasets":["common/data.py::wine()","common/data.py::classification()"],"scene":"故障类别可分性增强、小样本高维分类前置降维","pitfalls":["降维上限是类别数-1，二分类只能降到 1 维，别让学生困惑","必须类内散度矩阵可逆，小样本要先做正则","核心看点：方差最大方向未必是最可分方向"],"mustHave":["同一数据上 PCA 方向与 LDA 方向并列画出","1-NN 在 PCA(1维)/LDA(1维)/原始三维三种表示下的精度对比","可调类内方差与类间分离，展示何时两者差距最大"],"open":1,"cap":3,"note":"","S":2.5,"K":1.2,"tier":"B","baseline":"wine：类别数 3，LDA 最多只能降到 2 维（受类间散度矩阵秩的限制）；wine 上 LDA 2 维的 1-NN 准确率 0.963 对比 PCA 2 维 0.926。"},{"id":"L3-03","n":"非负矩阵分解 NMF","l":"L3","lt":"降维与矩阵分解","star":0,"d":{"M":4,"C":3,"V":3,"A":3,"R":1},"hours":24,"exp":"exp_l3_03_nmf.py","demo":3218,"datasets":["common/data.py::blobs()","合成非负矩阵"],"scene":"光谱/能谱分解、图像部件提取、故障模式分解","pitfalls":["乘法更新里分子分母的矩阵容易转置错，务必单独写 mm/mtm 两个函数","必须加 1e-9 防除零，否则整片 NaN","输入必须非负，含负值的数据要先平移"],"mustHave":["原始矩阵 / W / H / 重建矩阵四格热力图","随迭代次数下降的重构误差曲线","与 PCA 的「可加部件 vs 正交方向」对比"],"open":1,"cap":3,"note":"","S":2.95,"K":1.25,"tier":"C","baseline":"重构误差：NMF 0.2216 vs PCA 0.1805。PCA 误差更低是意料之中——它的解空间不受非负约束，是 Frobenius 意义下的最优低秩近似；NMF 用少量精度换取可解释性。"},{"id":"L3-04","n":"t-SNE / UMAP","l":"L3","lt":"降维与矩阵分解","star":0,"d":{"M":4,"C":3,"V":5,"A":5,"R":2},"hours":32,"exp":"exp_l3_04_manifold.py","demo":3614,"datasets":["common/data.py::blobs()","common/data.py::digits()"],"scene":"高维工艺数据聚类可视化、故障模式探索性分析","pitfalls":["簇间距离不可解释，图上看着远不代表真的远","perplexity 敏感性必须演示，否则学生以为默认是权威","KL 散度非对称，KL(P||Q) 与 KL(Q||P) 行为不同"],"mustHave":["真实 KLD 优化的迭代动画（不是调用一次 fit_transform）","perplexity 滑块并实时重plot","与 PCA 结果并排对比，说明非线性结构"],"open":1,"cap":3,"note":"易被做成「调一次 sklearn 然后画图」，必须提供 perplexity 滑块并在视频中解释「簇间距离不可解释」。","S":3.9,"K":1.35,"tier":"C","baseline":"UMAP 未安装（ModuleNotFoundError），本次跳过。替代验证方式：① `pip install umap-learn` 后重跑本脚本即可自动纳入；② 若无法联网安装，可用 t-SNE + PCA 的对比结论外推：UMAP 通常耗时低于 t-SNE、且对全局结构的保持优于 t-SNE，但嵌入空间的距离仍不可定量解释。"},{"id":"L3-05","n":"独立成分分析 ICA","l":"L3","lt":"降维与矩阵分解","star":0,"d":{"M":4,"C":3,"V":4,"A":4,"R":1},"hours":28,"exp":"exp_l3_05_ica.py","demo":3376,"datasets":["common/data.py::mixed_signals()"],"scene":"设备多源振动信号分离、声学故障诊断","pitfalls":["白化矩阵必须是 D^(-1/2) V^T，分母下标写错会导致 ICA 反而弱于 PCA","FastICA 用 tanh 时务必说明非高斯性假设","分离结果有顺序与符号的不确定性，要显式说明"],"mustHave":["源信号 → 混合 → 分离 三列波形图","散布图 + 直方图显示非高斯性变化","与 PCA 的恢复相似度定量对照（应显著占优）"],"open":1,"cap":3,"note":"数学门槛高，选题绑定多源振动信号分离的应用场景叙事。","S":3.35,"K":1.3,"tier":"C","baseline":"FastICA 平均相关系数 0.9998，PCA 仅 0.7863。差距来自目标函数：PCA 只要求二阶不相关，ICA 最大化非高斯性（独立性），因此能分离 PCA 无法处理的非高斯源。"},{"id":"L3-06","n":"自编码器 AE","l":"L3","lt":"降维与矩阵分解","star":0,"d":{"M":4,"C":4,"V":4,"A":3,"R":1},"hours":30,"exp":"exp_l3_06_autoencoder.py","demo":3859,"datasets":["common/data.py::blobs()","合成环形/月牙数据"],"scene":"工业设备异常检测、非线性降维","pitfalls":["手写 BP 在隐层大时会梯度爆炸，必须加梯度范数裁剪","线性 AE 的解空间是 PCA 子空间的旋转，要说清不等价","学习率过大直接 NaN，页面上要能看出来并提示"],"mustHave":["训练损失随 epoch 下降的实时曲线","原空间 → 隐空间 → 重建的三视图","瓶颈维度 H 滑块，展示欠拟合到过拟合"],"open":1,"cap":3,"note":"","S":3.4,"K":1.3,"tier":"C","baseline":"三个 k 值下 AE 与 PCA 的重建误差差均在 0.0003 以内——作为「重建映射」两者等价，这正是单层线性 AE ≡ PCA 的实测证据。"},{"id":"L4-01","n":"线性回归 / Ridge / Lasso","l":"L4","lt":"监督学习","star":1,"d":{"M":2,"C":2,"V":2,"A":2,"R":1},"hours":12,"exp":"exp_l4_01_regression.py","demo":1522,"datasets":["common/data.py::synth_process()"],"scene":"工艺参数 → 零件性能预测、表面粗糙度建模","pitfalls":["多项式阶数过高必然过拟合，要同时显示训练/测试 RMSE","Lasso 的稀疏性：alpha 增大时系数逐步归零的过程必须可见","Ridge 只会压缩不会置零，别和 Lasso 混为一谈"],"mustHave":["拟合曲线与真实曲线叠加，随阶数 d 变化","训练/测试 RMSE 双曲线，出现明显的泛化 gap","Lasso 各特征系数随 alpha 的收缩路径"],"open":1,"cap":3,"note":"","S":1.85,"K":1.1,"tier":"A","baseline":"线性模型 RMSE 0.4598 / R² 0.9598，随机森林 RMSE 0.2209 / R² 0.9907：数据生成式中含 62·f² 与 f·vib 交互项，线性假设无法表达，非线性模型显著更优。"},{"id":"L4-02","n":"逻辑回归","l":"L4","lt":"监督学习","star":0,"d":{"M":3,"C":2,"V":2,"A":2,"R":1},"hours":14,"exp":"exp_l4_02_logistic.py","demo":2485,"datasets":["common/data.py::classification()","common/data.py::breast()"],"scene":"合格/不合格判定、故障概率估计","pitfalls":["数据太容易分时看不出正则作用，应加噪声或降分离度","输出是概率不是硬标签，要画概率等高线","务必与线性 SVM 决策边界做对照"],"mustHave":["散点 + 概率等高线渐变 + 决策边界","交叉熵损失随迭代下降曲线","正则强度滑块，展示权重收缩"],"open":1,"cap":3,"note":"","S":2.1,"K":1.15,"tier":"B","baseline":"sklearn 与自实现（Adam 训练）的一致性：平均预测概率差 0.0339、准确率差 0.0175、权重向量相关系数 0.7471。三项均表明自实现的损失、梯度与优化步骤正确；残差来自正则强度与迭代步数的差异。"},{"id":"L4-03","n":"K 近邻 KNN","l":"L4","lt":"监督学习","star":0,"d":{"M":1,"C":1,"V":2,"A":1,"R":1},"hours":8,"exp":"exp_l4_03_knn.py","demo":1766,"datasets":["common/data.py::moons()","common/data.py::circles()"],"scene":"小样本模式识别、推荐系统召回","pitfalls":["k=1 必然过拟合边界锯齿，要动画演示 k 增大后边界平滑","距离度量选择比 k 更关键，但常被忽略","维度灾难：加噪声维度看精度崩塌"],"mustHave":["决策区域填色随 k 实时变化","单个查询点的 k 个近邻连线","维度灾难曲线（精度 vs 噪声维数）"],"open":1,"cap":3,"note":"","S":1.25,"K":1.05,"tier":"A","baseline":"k 值扫描：k=1 准确率 0.9870，最优 k=1 时 0.9870，k=25 时 0.9574。"},{"id":"L4-04","n":"决策树","l":"L4","lt":"监督学习","star":1,"d":{"M":3,"C":2,"V":3,"A":2,"R":1},"hours":18,"exp":"exp_l4_04_tree.py","demo":1816,"datasets":["common/data.py::moons()","common/data.py::classification()"],"scene":"工艺规则提取、故障原因树分析","pitfalls":["样本极少的一侧会被优先分出，要用信息增益而非单纯的深度控制","完全生长的树会切出碎片区域，必须对照剪枝效果","旋转敏感性：数据旋转后树结构全变"],"mustHave":["递归二分过程的分步动画","一边生长的树结构与特征区域划分同步显示","深度滑块 + 剪枝前后对比"],"open":1,"cap":3,"note":"","S":2.35,"K":1.15,"tier":"B","baseline":"wine 上 max_depth=3 的树只有 19 条规则，可直接读成工艺判定逻辑（节选）：\n|--- feature_9 <= 3.82\n|   |--- feature_2 <= 3.00\n|   |   |--- feature_11 <= 3.73\n|   |   |   |--- class: 1\n|   |   |--- feature_11 >  3.73\n|   |   |   |--- class: 0\n|   |--- feature_2 >  3.00\n|   |   |--- class: 0\n|--- feature_9 >  3.82\n|   |--- feature_6 <= 1.58\n|   |   |--- feature_3 <= 17.65\n|   |   |   |--- class: 1\n|   |   |--- feature_3 >  17.65\n|   |   |   |--- class: 2\n|   |--- feature_6"},{"id":"L4-05","n":"支持向量机 SVM","l":"L4","lt":"监督学习","star":1,"d":{"M":4,"C":2,"V":3,"A":3,"R":1},"hours":22,"exp":"exp_l4_05_svm.py","demo":1886,"datasets":["common/data.py::circles()","common/data.py::moons()"],"scene":"小样本缺陷分类、故障模式识别","pitfalls":["C 的含义必须与软间隔讲清楚，否则调参没依据","gamma 过大会导致过拟合边界包住每个点","核技巧是难点，务必说明「升维后线性可分」"],"mustHave":["线性/多项式/RBF 核可切换","支持向量高亮 + 间隔带宽可视化","C 与 gamma 两个滑块下的边界形变"],"open":1,"cap":3,"note":"","S":2.75,"K":1.2,"tier":"B","baseline":"moons（非线性）上线性核最高 0.8667，RBF 核最高 1.0000：核技巧把线性方法扩展到非线性边界，这是 SVM 处理「环形/月牙」分布的关键。"},{"id":"L4-06","n":"朴素贝叶斯","l":"L4","lt":"监督学习","star":0,"d":{"M":2,"C":1,"V":2,"A":2,"R":1},"hours":10,"exp":"exp_l4_06_naive_bayes.py","demo":2613,"datasets":["common/data.py::blobs()","合成文本词频"],"scene":"故障工单文本分类、初步筛选模型","pitfalls":["条件独立假设在相关特征上失效，要专门演示失败案例","连续特征用高斯假设时方差为 0 要平滑","先验改变会整体平移决策边界"],"mustHave":["两类的高斯等高线与决策边界","先验概率滑块带动边界整体平移","相关 vs 独立两种数据的假设失效对照"],"open":1,"cap":3,"note":"","S":1.65,"K":1.1,"tier":"A","baseline":"digits 上 MultinomialNB 0.8759 / BernoulliNB 0.8741 明显优于 GaussianNB 0.8222：像素计数型特征更贴近多项式/伯努利分布假设。"},{"id":"L5-01","n":"随机森林","l":"L5","lt":"集成与调优","star":1,"d":{"M":3,"C":2,"V":3,"A":2,"R":1},"hours":18,"exp":"exp_l5_01_randomforest.py","demo":2181,"datasets":["common/data.py::classification()","common/data.py::synth_process()"],"scene":"通用表格数据建模、关键工艺参数识别","pitfalls":["单棵树方差大、森林方差小，要用多棵树投票动画说明","特征重要性不等于因果重要性","OOB 误差可作为内置交叉验证，值得展示"],"mustHave":["不同 Bootstrap 子集上的多棵树单棵边界并列显示","随树数 B 增加的准确率收敛曲线","特征重要性排序条形图"],"open":1,"cap":3,"note":"","S":2.35,"K":1.15,"tier":"B","baseline":"单棵决策树 0.9181 → 300 棵随机森林 0.9415（breast_cancer/digits 两数据集一致趋势）：双重随机性有效降低了方差。"},{"id":"L5-02","n":"GBDT / XGBoost / LightGBM","l":"L5","lt":"集成与调优","star":1,"d":{"M":4,"C":3,"V":3,"A":4,"R":2},"hours":28,"exp":"exp_l5_02_boosting.py","demo":4086,"datasets":["common/data.py::synth_process()"],"scene":"工艺参数寻优建模、质量预测与良率分析","pitfalls":["本机无 GPU 且未装 xgboost，统一用 HistGradientBoosting 替代，须注明","逐棵加树拟合残差的过程必须可见，否则退化成调库","学习率与树数存在权衡，不是越大越好"],"mustHave":["残差逐步被磨平的动画（每加一棵树）","训练/测试 RMSE 随迭代轮数变化","整体/局部的预测曲面随树数演化"],"open":1,"cap":3,"note":"","S":3.25,"K":1.3,"tier":"C","baseline":"xgboost 未安装（ModuleNotFoundError）。替代验证方式：sklearn 的 HistGradientBoostingClassifier 与 XGBoost 同为「直方图分桶 + 二阶梯度」的梯度提升实现，接口一致（fit/predict/ predict_proba），本实验用它作为等价替代；如需 XGBoost 可 `pip install xgboost` 后重跑，脚本会自动纳入对比。"},{"id":"L5-03","n":"AdaBoost","l":"L5","lt":"集成与调优","star":0,"d":{"M":3,"C":2,"V":3,"A":3,"R":1},"hours":20,"exp":"exp_l5_03_noise_robust.py","demo":4242,"datasets":["common/data.py::classification()"],"scene":"Boosting 思想原型、集成鲁棒性分析","pitfalls":["难样本权重放大是核心看点，必须可视化权重变化","标签噪声下 AdaBoost 会崩，这是与 RF 对比的关键场景","弱分类器必须是决策树桩"],"mustHave":["样本点大小=权重，随迭代明显变化","每轮的弱分类器边界叠加显示","噪声率滑块下的泛化退化对照"],"open":1,"cap":3,"note":"","S":2.5,"K":1.2,"tier":"B","baseline":"10% 标签噪声下：AdaBoost 0.9532→0.9357（衰减 0.0175），随机森林 0.9415→0.9474（衰减 -0.0058）。"},{"id":"L6-01","n":"K-Means","l":"L6","lt":"无监督学习","star":1,"d":{"M":2,"C":3,"V":3,"A":1,"R":1},"hours":16,"exp":"exp_l6_01_kmeans.py","demo":1414,"datasets":["common/data.py::blobs()","common/data.py::circles()"],"scene":"工况分型、生产批次聚类、零件分组","pitfalls":["初始化不同结果可能天差地别，必须做多次初始化","对非凸形状（月牙/环）失效，要和 DBSCAN 对照","K 需要手选，手肘法要给曲线"],"mustHave":["迭代过程动画：质心移动 + 颜色重分配","K 滑块 + inertia 手肘曲线","random 与 k-means++ 初始化的结果对照"],"open":1,"cap":3,"note":"","S":2.15,"K":1.15,"tier":"B","baseline":"单次初始化时，随机初始化 inertia 7957.1（多次运行标准差 8712.4），k-means++ 1431.1（标准差 0.0）：后者既更接近全局最优，也更稳定。|"},{"id":"L6-02","n":"DBSCAN","l":"L6","lt":"无监督学习","star":0,"d":{"M":2,"C":3,"V":3,"A":2,"R":1},"hours":18,"exp":"exp_l6_02_dbscan.py","demo":1978,"datasets":["common/data.py::moons()","common/data.py::circles()"],"scene":"异常工况检测、轨迹/空间点聚类","pitfalls":["eps 与 minPts 有耦合，只调一个很难出效果，应给出推荐默认值","密度差异大的数据集很难用一组参数通吃","噪声点标记为单独颜色，别忽略"],"mustHave":["核心点/边界点/噪声点三类可视化","eps 与 minPts 双滑块","与 K-Means 在同一非凸数据上的对比"],"open":1,"cap":3,"note":"","S":2.3,"K":1.15,"tier":"B","baseline":"DBSCAN 最佳配置 DBSCAN(eps=0.2)（moons）ARI 1.0000，而 KMeans(k=2) ARI 仅 0.2648：基于质心的划分只能切出凸形区域，无法表达月牙/同心圆结构。"},{"id":"L6-03","n":"层次聚类 / GMM","l":"L6","lt":"无监督学习","star":0,"d":{"M":4,"C":3,"V":4,"A":3,"R":1},"hours":28,"exp":"exp_l6_03_gmm.py","demo":2739,"datasets":["common/data.py::blobs()"],"scene":"零件族谱系划分、工况软分类","pitfalls":["簇标签编号是任意的，跨算法比较要按最优排列匹配","树状图（谱系树）的绘制工作量常被低估，建议二选一","GMM 的 EM 可能落入局部最优，需多次初始化"],"mustHave":["自底向上合并的动画 + 同步生成的树状图","GMM 的高斯椭圆逐步收敛过程","硬聚类 vs 软聚类（归属概率）对比"],"open":1,"cap":3,"note":"谱系树绘制工作量常被低估，建议层次聚类与 GMM 二选一深做。","S":3.2,"K":1.3,"tier":"C","baseline":"各向同性 blobs 上 KMeans ARI 1.0000，与 GMM(full) 的 1.0000 一致——数据本身球状等方差时两者等价。"},{"id":"L7-01","n":"多层感知机 MLP","l":"L7","lt":"深度学习","star":0,"d":{"M":3,"C":4,"V":4,"A":3,"R":1},"hours":26,"exp":"exp_l7_01_mlp.py","demo":2083,"datasets":["common/data.py::moons()","common/data.py::circles()"],"scene":"非线性质量预测、结构化数据建模","pitfalls":["手写反向传播极易写错链式法则，建议逐层数值梯度校验","螺旋数据分离常常失败，需要足够大的隐层和合适的学习率","隐藏层过大会记住训练集中的每个点"],"mustHave":["隐藏层神经元 H 与训练轮数滑块","决策边界随训练轮数演化的动画（或逐步重绘）","损失曲线 + 训练/测试准确率"],"open":1,"cap":3,"note":"","S":3.15,"K":1.25,"tier":"C","baseline":"最优配置 (128, 64) / lr=0.001：测试准确率 0.9833，超过逻辑回归基线 0.9667，说明该数据存在非线性可分结构。"},{"id":"L7-02","n":"卷积神经网络 CNN","l":"L7","lt":"深度学习","star":1,"d":{"M":3,"C":4,"V":4,"A":2,"R":3},"hours":30,"exp":"exp_l7_02_cnn.py","demo":2935,"datasets":["合成纹理/缺陷图","common/data.py::digits()"],"scene":"增材制造缺陷检测、工件视觉分拣、表面质量判定","pitfalls":["本机无 torch，CNN 只能做「卷积/池化算子层面的替代验证」，须在报告中注明","权值共享必须用参数量对比说明，不能只讲概念","padding/stride 的对齐容易被忽略，卷积后尺寸算错"],"mustHave":["卷积核可视化 + 特征图实时更新","六个以上预设卷积核可切换，看到边缘/纹理不同响应","ReLU 稀疏化效果对比图"],"open":1,"cap":3,"note":"","S":3.3,"K":1.3,"tier":"C","baseline":"算子层：自实现 conv2d 与 scipy.convolve2d 的最大绝对误差 6.66e-16，说明互相关/卷积的实现与翻转约定正确。"},{"id":"L7-03","n":"循环网络 RNN / LSTM","l":"L7","lt":"深度学习","star":1,"d":{"M":4,"C":4,"V":4,"A":4,"R":3},"hours":34,"exp":"exp_l7_03_rnn.py","demo":4379,"datasets":["common/data.py::timeseries()"],"scene":"设备振动信号预测性维护、剩余寿命 RUL 预测","pitfalls":["本机无 torch，只能用手写 Elman RNN 做替代验证","简单的加和记忆任务会被 tanh 饱和锁存绕过，证明不了梯度消失；建议改为直接可视化梯度流 PNG 本身","LSTM 的遗忘门初始化对收敛影响巨大"],"mustHave":["梯度回传的保留率对数曲线（RNN vs LSTM）","隐藏状态随时间步的热力图","门控值的可视化（哪些门在什么时候关闭）"],"open":1,"cap":3,"note":"","S":3.85,"K":1.35,"tier":"C","baseline":"最优：Elman RNN(hidden=16)，测试 RMSE 0.07736；朴素基线 0.28262。"},{"id":"L7-04","n":"Transformer / 注意力","l":"L7","lt":"深度学习","star":1,"d":{"M":5,"C":4,"V":5,"A":4,"R":3},"hours":40,"exp":"exp_l7_04_attention.py","demo":4516,"datasets":["合成序列"],"scene":"多模态工业检测、时序大模型、工艺知识问答底座","pitfalls":["自注意力只用到矩阵乘法和 softmax，可用 numpy 复现并验证排列等变性","缩放点积里的 sqrt(d_k) 不能漏，否则 softmax 饱和","位置编码缺失时为序列不变，这是最直观的反例"],"mustHave":["注意力权重热力图（Q-K 关系）","多头注意力各头模式切换","因果掩码与温度 τ 的开关，并能验证排列等变性"],"open":1,"cap":3,"note":"全班最多 1 组。交付物限定为注意力机制可视化，禁止训练语言模型。","S":4.35,"K":1.4,"tier":"D","baseline":"P1：排列等变误差 2.22e-16，说明自注意力本身不含位置信息——这正是 Transformer 必须额外加位置编码（sinusoidal / RoPE）的根本原因。"},{"id":"L8-01","n":"强化学习 DQN / PPO","l":"L8","lt":"决策与生成（选讲）","star":0,"d":{"M":4,"C":4,"V":4,"A":4,"R":3},"hours":34,"exp":"exp_l8_01_qlearning.py","demo":4651,"datasets":["common/data.py::GridWorld"],"scene":"机器人路径与抓取规划、工艺参数在线寻优、生产排程","pitfalls":["argmax 平局时若总选第一个动作会卡在起点撞墙，平局必须随机","终止状态的目标应为 0，误用 max Q(s') 会导致学不会","贪心率衰减策略要显式给出"],"mustHave":["GridWorld 上的 V 值热图与策略箭头","每回合步数的收敛曲线","「走一遍」按钮演示学习后的路径"],"open":1,"cap":3,"note":"","S":3.85,"K":1.35,"tier":"C","baseline":"回报口径统一为折扣累积（γ=0.95）。价值迭代给出的最优起点价值 6.380；Q-Learning 训练后期（最后 100 回合）平均 6.057，贪心策略评估 6.380 ± 0.000。"},{"id":"L8-02","n":"生成模型 GAN / Diffusion","l":"L8","lt":"决策与生成（选讲）","star":0,"d":{"M":5,"C":5,"V":5,"A":5,"R":4},"hours":48,"exp":"exp_l8_02_generative.py","demo":4882,"datasets":["common/data.py::moons()","common/data.py::blobs()"],"scene":"缺陷样本数据增强、仿真场景生成","pitfalls":["本机无任何对照基线，FID/IS 等需预训练网络的指标一律不可做","建议只做低维 toy 版本：用真实后验做反向去噪过程","GAN 的判别器/生成器对抗容易不收敛，慎选"],"mustHave":["前向加噪 → 反向去噪的完整过程动画","噪声规λ(t) 随时间步的变化曲线","二维点云从纯噪声逐步恢复为目标的中间帧"],"open":0,"cap":3,"note":"默认关闭。若有组强烈要求须签《超额选题承诺书》，且限定做 1D/2D 玩具版 Diffusion 的加噪/去噪过程可视化，禁止使用 FID/IS 等需预训练网络的指标。","S":4.85,"K":1.5,"tier":"D","baseline":"最优：GMM(k=3)，1-Wasserstein 0.0948、MMD 0.0071。真实分量数为 3，GMM(k=3) 的 BIC 7976.8 低于 k=1 的 9667.0，说明模型选择准则能自动识别正确复杂度。"},{"id":"L8-03","n":"异常检测","l":"L8","lt":"决策与生成（选讲）","star":1,"d":{"M":3,"C":3,"V":3,"A":2,"R":1},"hours":20,"exp":"exp_l8_03_anomaly.py","demo":5053,"datasets":["common/data.py::sensor_anomaly()","common/data.py::blobs()"],"scene":"设备异常早期预警、产品离群检测、传感器故障识别","pitfalls":["阈值与 contamination 的设定直接决定精确率/召回率，必须可调","重构误差法与密度法的失效场景不同，值得对比","极度不平衡时准确率是无效指标，必须用 F1"],"mustHave":["密度场/重构误差场的可视化","阈值滑块联动精确率/召回率/F1","Isolation Forest 与重构误差法的并排对比"],"open":1,"cap":3,"note":"","S":2.55,"K":1.2,"tier":"B","baseline":"IsolationForest F1 0.8023 / AUC 0.9846；PCA 重构误差最佳（PCA 重构误差(k=1)）F1 0.7558 / AUC 0.8863；自实现 SVD 重构 F1 0.5060 / AUC 0.5240 —— 后两者结果一致，再次确认两条实现等价。"}]/*TOPICS:END*/;
+
+const KEY = 'ai_pick_v1';
+const BACKUP = 'ai_pick_v1_bak';
+const GROUPS = ['G01','G02','G03','G04','G05','G06','G07','G08','G09','G10'];
+const AI_TOOLS = ['CodeBuddy','ChatGPT','Claude','DeepSeek','通义千问','文心一言','其他'];
+const ROLES = ['算法与脚本','交互可视化','讲解与文档'];
+const TIER_NAME = {A:'基础',B:'标准',C:'进阶',D:'挑战'};
+const DOC_ORDER = ['algo','viz','doc'];
+
+/* ---------------- 状态 ---------------- */
+function emptyState(){ return {ver:1, updated:0, groups:{}}; }
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if(s && s.groups) return s;
+  }catch(e){}
+  return emptyState();
+}
+function save(){
+  try{
+    const old = localStorage.getItem(KEY);
+    if(old) localStorage.setItem(BACKUP, old);
+  }catch(e){}
+  ST.updated = Date.now();
+  try{ localStorage.setItem(KEY, JSON.stringify(ST)); }
+  catch(e){ alert('保存失败，可能浏览器禁用了本地存储。请改用「导出 JSON」保存。'); }
+}
+let ST = load();
+
+/* ---------------- 工具 ---------------- */
+function usedBy(id){
+  return GROUPS.filter(g => (ST.groups[g]||{}).topic === id);
+}
+function free(id){
+  const t = TOPICS.find(x => x.id === id);
+  return Math.max(0, t.cap - usedBy(id).length);
+}
+function download(name, text, mime){
+  const blob = new Blob([text], {type: mime || 'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function esc(s){
+  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+function today(){
+  const d = new Date();
+  const p = n => String(n).padStart(2,'0');
+  return d.getFullYear() + p(d.getMonth()+1) + p(d.getDate());
+}
+
+/* ---------------- 渲染 ---------------- */
+const view = {q:'', tier:'all', layer:'all', sort:'k', onlyFree:false};
+
+function matches(t){
+  if(view.tier !== 'all' && t.tier !== view.tier) return false;
+  if(view.layer !== 'all' && t.l !== view.layer) return false;
+  if(view.onlyFree && free(t.id) <= 0) return false;
+  if(view.q){
+    const q = view.q.toLowerCase();
+    const hay = [t.id, t.n, t.lt, t.scene, t.exp, t.baseline,
+                 (t.datasets||[]).join(' '), (t.pitfalls||[]).join(' '),
+                 (t.mustHave||[]).join(' ')].join(' ').toLowerCase();
+    if(hay.indexOf(q) < 0) return false;
+  }
+  return true;
+}
+
+function sortList(list){
+  const f = {
+    k:      (a,b) => a.K - b.K || a.id.localeCompare(b.id),
+    kdesc:  (a,b) => b.K - a.K || a.id.localeCompare(b.id),
+    id:     (a,b) => a.id.localeCompare(b.id),
+    hours:  (a,b) => a.hours - b.hours,
+    free:   (a,b) => free(b.id) - free(a.id) || a.K - b.K
+  }[view.sort];
+  return list.sort(f);
+}
+
+function cardHtml(t){
+  const used = usedBy(t.id);
+  const n = free(t.id);
+  const conf = used.length > 1;
+  const dimHtml = ['M','C','V','A','R'].map(k =>
+    '<div class="dim" title="' + k + ' = ' + t.d[k] + ' / 5">'
+    + '<div class="track"><i class="d' + k + '" style="height:'
+    + Math.round(t.d[k] / 5 * 100) + '%"></i></div><b>' + k + '</b></div>'
+  ).join('');
+
+  let h = '<div class="card t-' + t.tier + (t.open ? '' : ' locked')
+        + (n === 0 ? ' full' : '') + '" data-id="' + t.id + '">';
+  h += '<div class="c-top"><span class="c-id">' + t.id + '</span>'
+     + (t.star ? '<span class="c-star" title="本课重点 ★">★</span>' : '')
+     + '<span class="c-k">' + t.K.toFixed(2) + '<small>K</small></span></div>';
+  h += '<h3>' + esc(t.n) + '<span class="lt">' + t.l + ' ' + esc(t.lt) + '</span></h3>';
+  h += '<div class="dims">' + dimHtml + '</div>';
+  h += '<div class="c-meta"><span class="tag ' + t.tier + '">' + t.tier + ' '
+     + TIER_NAME[t.tier] + '</span>S ' + t.S.toFixed(2) + ' · 约 ' + t.hours + ' 人时</div>';
+  h += '<div class="c-scene">' + esc(t.scene) + '</div>';
+  if(t.baseline) h += '<div class="c-base">' + esc(t.baseline) + '</div>';
+  h += '<div class="c-lab"><b>必须包含：</b><ul>'
+     + (t.mustHave||[]).map(m => '<li>' + esc(m) + '</li>').join('') + '</ul></div>';
+  h += '<div class="c-lab"><b>参考：</b><code>' + esc(t.exp) + '</code> · 演示 @'
+     + t.demo + ' 行</div>';
+  if((t.pitfalls||[]).length)
+    h += '<div class="c-pit">⚠ ' + esc(t.pitfalls[0]) + '</div>';
+
+  h += '<div class="c-foot">';
+  h += '<span class="used' + (conf ? ' conf' : '') + '">已选 <b>' + used.length + '</b>/'
+     + t.cap + ' 组</span>';
+  if(used.length) h += '<span class="gtags">' + used.map(g =>
+      '<span class="gtag' + (conf ? ' conf' : '') + '">' + g + '</span>').join('') + '</span>';
+  if(!t.open){
+    h += '<span class="btn ghost" style="padding:4px 10px;font-size:11.5px;cursor:default">未开放</span>';
+  }else if(n > 0){
+    h += '<button class="btn pick" data-pick="' + t.id + '">我要选</button>';
+  }else{
+    h += '<span class="btn ghost" style="padding:4px 10px;font-size:11.5px;cursor:default">已满</span>';
+  }
+  h += '</div></div>';
+  return h;
+}
+
+function render(){
+  const list = sortList(TOPICS.filter(matches));
+  document.getElementById('grid').innerHTML = list.map(cardHtml).join('');
+  document.getElementById('empty').classList.toggle('hide', list.length > 0);
+  document.getElementById('listCnt').textContent =
+    '共 ' + list.length + ' 个可选题目（全部 30 个）';
+  renderBoard();
+}
+
+/* ---------------- 教师看板 ---------------- */
+function renderBoard(){
+  const picked = GROUPS.filter(g => (ST.groups[g]||{}).topic);
+  const done = picked.length;
+  const confs = [];
+  const seen = {};
+  picked.forEach(g => {
+    const id = ST.groups[g].topic;
+    (seen[id] = seen[id] || []).push(g);
+  });
+  Object.keys(seen).forEach(id => { if(seen[id].length > 1) confs.push(id); });
+
+  const tc = {A:0,B:0,C:0,D:0};
+  picked.forEach(g => { tc[(ST.groups[g]||{}).tier || tierOf(ST.groups[g].topic)]++; });
+
+  document.getElementById('bstats').innerHTML =
+    '<div class="bstat"><b>' + done + '</b>/' + GROUPS.length + ' 组已选题</div>'
+    + '<div class="bstat"><b>' + confs.length + '</b> 题撞题</div>'
+    + '<div class="bstat"><b>' + (GROUPS.length - done) + '</b> 组未选题</div>'
+    + '<div class="bstat" style="color:var(--text3)">'
+    + (ST.updated ? '更新于 ' + new Date(ST.updated).toLocaleString('zh-CN') : '尚无记录') + '</div>';
+
+  document.getElementById('tierbar').innerHTML = ['A','B','C','D'].map(k => {
+    const tot = TOPICS.filter(t => t.tier === k).length;
+    const sel = TOPICS.filter(t => t.tier === k && usedBy(t.id).length > 0).length;
+    return '<div class="' + k + '">' + k + ' 档 ' + sel + '/' + tot + '</div>';
+  }).join('');
+
+  document.getElementById('grouplist').innerHTML = GROUPS.map(g => {
+    const r = ST.groups[g] || {};
+    const t = r.topic ? TOPICS.find(x => x.id === r.topic) : null;
+    const cf = r.topic && seen[r.topic] && seen[r.topic].length > 1;
+    if(!t) return '<div class="gi"><b>' + g + '</b><div class="m">未选题</div></div>';
+    return '<div class="gi done' + (cf ? ' conf' : '') + '"><b>' + g + '</b>'
+      + '<span class="lk" data-unlock="' + g + '" title="解锁以便修改">'
+      + (r.teacherOk ? '🔒' : '✎') + '</span>'
+      + '<div class="m">' + esc(t.n) + '　K=' + t.K.toFixed(2)
+      + (cf ? '　<b style="color:var(--red)">撞题</b>' : '') + '</div>'
+      + '<div class="m">' + (r.members || []).filter(Boolean).join('、') + '</div>'
+      + '<div class="m" style="word-break:break-all">' + esc(r.repo || '未填仓库') + '</div></div>';
+  }).join('');
+}
+function tierOf(id){
+  const t = TOPICS.find(x => x.id === id);
+  return t ? t.tier : 'A';
+}
+
+/* ---------------- 登记表单 ---------------- */
+let FORM = null;
+function openForm(id, gid){
+  const t = TOPICS.find(x => x.id === id);
+  const g = gid || GROUPS.find(x => !(ST.groups[x] || {}).topic) || 'G01';
+  const cur = ST.groups[g] || {};
+  const mem = cur.members || ['', '', ''];
+  const roles = cur.roles || {algo:'', viz:'', doc:''};
+  const others = usedBy(id).filter(x => x !== g);
+
+  let h = '<h3>' + esc(t.n) + '　<span style="color:var(--blue)">K=' + t.K.toFixed(2) + '</span></h3>';
+  h += '<div class="hint">' + t.id + ' · ' + t.l + ' ' + esc(t.lt) + ' · ' + t.tier
+     + ' ' + TIER_NAME[t.tier] + ' 档 · 约 ' + t.hours + ' 人时</div>';
+  if(others.length)
+    h += '<div class="warnbox">该题已被 <b>' + others.join('、') + '</b> 选中（最多 '
+       + t.cap + ' 组）。与其他组撞题时，报告须增加不少于 300 字的「与另一组方案的对比」章节。</div>';
+  if(t.note)
+    h += '<div class="warnbox"><b>限制说明：</b>' + esc(t.note) + '</div>';
+
+  h += '<div class="fld"><label>组号</label><select id="f-g">'
+     + GROUPS.map(x => {
+         const o = ST.groups[x];
+         const busy = o && o.topic && o.topic !== id && !gid;
+         return '<option value="' + x + '"' + (x === g ? ' selected' : '')
+              + (busy ? ' disabled' : '') + '>' + x
+              + (busy ? '（已选 ' + o.topic + '）' : '') + '</option>';
+       }).join('') + '</select></div>';
+
+  h += '<div class="fld"><label>三名成员姓名</label><div class="row">'
+     + [0,1,2].map(i => '<input type="text" id="f-m' + i + '" value="'
+       + esc(mem[i] || '') + '" placeholder="成员' + (i+1) + '">').join('')
+     + '</div></div>';
+
+  h += '<div class="fld"><label>角色分工（三人须各不相同，答辩随机抽问）</label>';
+  DOC_ORDER.forEach((r, i) => {
+    h += '<div style="margin-bottom:5px"><select id="f-r' + r + '">'
+       + '<option value="">—— 谁负责' + ROLES[i] + '？</option>'
+       + [0,1,2].map(j => {
+           const nm = mem[j] || ('成员' + (j + 1));
+           const taken = DOC_ORDER.filter(x => x !== r).some(x => roleVal(roles, x) === j);
+           return '<option value="' + j + '"'
+                + (roleVal(roles, r) === j ? ' selected' : '')
+                + (taken ? ' disabled' : '') + '>' + esc(nm) + '</option>';
+         }).join('') + '</select></div>';
+  });
+  h += '</div>';
+
+  h += '<div class="fld"><label>仓库地址（GitHub / Gitee，必填）</label>'
+     + '<input type="url" id="f-repo" value="' + esc(cur.repo || '')
+     + '" placeholder="https://gitee.com/xxx/ai-pca-demo"></div>';
+
+  h += '<div class="fld"><label>使用了哪些 AI 工具（须同步写入仓库 AI_USE.md）</label><div class="aiopts">'
+     + AI_TOOLS.map(a => '<label><input type="checkbox" class="f-ai" value="' + a + '"'
+       + ((cur.aiTools || []).indexOf(a) >= 0 ? ' checked' : '') + '>' + a + '</label>').join('')
+     + '</div></div>';
+
+  h += '<div class="okbox">选题后难度系数 K = <b>' + t.K.toFixed(2) + '</b> 即锁定。'
+     + '最终成绩 = min(100, 原始分 × ' + t.K.toFixed(2) + ')。</div>';
+
+  h += '<div class="m-act">'
+     + '<button class="btn ghost" id="f-cancel">取消</button>'
+     + (cur.topic ? '<button class="btn ghost" id="f-del" style="color:var(--red)">退选</button>' : '')
+     + '<button class="btn" id="f-ok">确认选题</button></div>';
+
+  document.getElementById('modal').innerHTML = h;
+  document.getElementById('mask').classList.remove('hide');
+  FORM = {id: id, gid: g};
+
+  // 姓名变化时刷新角色下拉的可选项
+  [0,1,2].forEach(i => {
+    document.getElementById('f-m' + i).addEventListener('input', refreshRoles);
+  });
+  DOC_ORDER.forEach(r => document.getElementById('f-r' + r).addEventListener('change', refreshRoles));
+  document.getElementById('f-g').addEventListener('change', () => {
+    const ng = document.getElementById('f-g').value;
+    const c = ST.groups[ng] || {};
+    [0,1,2].forEach(i => { document.getElementById('f-m' + i).value = (c.members || [])[i] || ''; });
+    DOC_ORDER.forEach(r => {
+      const sel = document.getElementById('f-r' + r);
+      sel.value = (c.roles || {})[r] || '';
+    });
+    document.getElementById('f-repo').value = c.repo || '';
+    FORM.gid = ng;
+    refreshRoles();
+  });
+
+  document.getElementById('f-cancel').onclick = closeForm;
+  document.getElementById('f-ok').onclick = submitForm;
+  const del = document.getElementById('f-del');
+  if(del) del.onclick = () => { dropGroup(FORM.gid); closeForm(); };
+}
+
+/* 角色记录成员下标（0/1/2），不记姓名 —— 姓名随时可改，下标不会错乱 */
+function roleVal(roles, r){
+  const v = (roles || {})[r];
+  return (v === '' || v === undefined || v === null) ? -1 : Number(v);
+}
+function refreshRoles(){
+  const el = i => document.getElementById('f-m' + i);
+  const selOf = r => document.getElementById('f-r' + r);
+  const names = [0,1,2].map(i => el(i) ? el(i).value.trim() : '');
+  const map = {};
+  DOC_ORDER.forEach(r => { const s = selOf(r); map[r] = s ? s.value : ''; });
+  DOC_ORDER.forEach(r => {
+    const sel = selOf(r);
+    if(!sel) return;
+    Array.from(sel.options).forEach((o, idx) => {
+      if(idx === 0) return;
+      const j = Number(o.value);
+      o.textContent = names[j] || ('成员' + (j + 1));   // 下拉文字随输入实时更新
+      o.disabled = DOC_ORDER.filter(x => x !== r)
+        .some(x => map[x] !== '' && Number(map[x]) === j);
+    });
+  });
+}
+
+function submitForm(){
+  const gid = document.getElementById('f-g').value;
+  const members = [0,1,2].map(i => document.getElementById('f-m' + i).value.trim());
+  const roles = {};
+  DOC_ORDER.forEach(r => { roles[r] = document.getElementById('f-r' + r).value.trim(); });
+  const repo = document.getElementById('f-repo').value.trim();
+  const aiTools = Array.from(document.querySelectorAll('.f-ai:checked')).map(x => x.value);
+
+  if(members.filter(Boolean).length !== 3){
+    alert('请填写三名成员的姓名。'); return;
+  }
+  const rv = DOC_ORDER.map(r => roles[r]);
+  if(rv.some(v => !v)){ alert('三个角色都必须指定到人。'); return; }
+  if(new Set(rv).size !== 3){ alert('三个角色必须由三人分别担任，不能一人兼任。'); return; }
+  const dupMember = new Set(members.filter(Boolean)).size !== 3;
+  if(dupMember){ alert('三名成员姓名不能重复。'); return; }
+  if(!/^https:\/\/(github\.com|gitee\.com)\//.test(repo)){
+    alert('仓库地址必须是 https://github.com/... 或 https://gitee.com/... 开头。'); return;
+  }
+
+  const old = ST.groups[gid] || {};
+  ST.groups[gid] = {
+    topic: FORM.id, members: members, roles: roles, repo: repo,
+    aiTools: aiTools, teacherOk: false, ts: Date.now()
+  };
+  if(old.topic && old.topic !== FORM.id){
+    // 换题不保留原占用
+  }
+  save(); render(); closeForm();
+}
+
+function dropGroup(gid){
+  if(!confirm('确认 ' + gid + ' 退选当前题目？')) return;
+  delete ST.groups[gid];
+  save(); render();
+}
+
+function closeForm(){
+  document.getElementById('mask').classList.add('hide');
+  document.getElementById('modal').innerHTML = '';
+  FORM = null;
+}
+
+/* ---------------- 导出 / 导入 ---------------- */
+function toRows(){
+  return GROUPS.filter(g => (ST.groups[g] || {}).topic).map(g => {
+    const r = ST.groups[g];
+    const t = TOPICS.find(x => x.id === r.topic) || {};
+    const mem = r.members || [];
+    const who = k => {
+      const j = Number((r.roles || {})[k]);
+      return isNaN(j) ? '' : (mem[j] || '');
+    };
+    return {
+      group: g, id: t.id || '', algo: t.n || '', layer: (t.l || '') + ' ' + (t.lt || ''),
+      tier: t.tier || '', K: t.K ? t.K.toFixed(2) : '', hours: t.hours || '',
+      members: mem.join('、'),
+      algoWho: who('algo'), vizWho: who('viz'), docWho: who('doc'),
+      repo: r.repo || '', ai: (r.aiTools || []).join('/'),
+      exp: t.exp || ''
+    };
+  });
+}
+function exportJson(){
+  download('选题登记_' + today() + '.json',
+    JSON.stringify(ST, null, 1), 'application/json;charset=utf-8');
+}
+function exportCsv(){
+  const head = ['组号','编号','算法','所属层','档位','难度系数K','预估人时',
+                '成员','算法与脚本','交互可视化','讲解与文档','仓库地址','AI工具','参考脚本'];
+  const rows = toRows().map(r => [r.group, r.id, r.algo, r.layer, r.tier, r.K, r.hours,
+    r.members, r.algoWho, r.vizWho, r.docWho, r.repo, r.ai, r.exp]);
+  const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const csv = '\ufeff' + [head].concat(rows).map(r => r.map(q).join(',')).join('\r\n');
+  download('选题登记_' + today() + '.csv', csv, 'text/csv;charset=utf-8');
+}
+function exportMd(){
+  const rows = toRows();
+  let md = '# 综合项目分组选题登记\n\n'
+    + '> 导出时间：' + new Date().toLocaleString('zh-CN') + '\n'
+    + '> 已选题：' + rows.length + ' / ' + GROUPS.length + ' 组\n\n';
+  if(!rows.length){
+    md += '暂无选题记录。\n';
+  }else{
+    md += '| 组号 | 编号 | 算法 | 难度系数 K | 档位 | 成员 | 分工（算法/交互/文档） | 仓库地址 |\n'
+       + '|---|---|---|---|---|---|---|---|\n';
+    rows.forEach(r => {
+      md += '| ' + r.group + ' | ' + r.id + ' | ' + r.algo + ' | ' + r.K + ' | ' + r.tier
+         + ' | ' + r.members + ' | ' + r.algoWho + ' / ' + r.vizWho + ' / ' + r.docWho
+         + ' | ' + r.repo + ' |\n';
+    });
+    md += '\n## 撞题情况\n\n';
+    const seen = {};
+    rows.forEach(r => { (seen[r.id] = seen[r.id] || []).push(r.group); });
+    const confs = Object.keys(seen).filter(k => seen[k].length > 1);
+    if(!confs.length){
+      md += '无撞题。\n';
+    }else{
+      confs.forEach(k => {
+        const t = TOPICS.find(x => x.id === k) || {};
+        md += '- **' + (t.n || k) + '**（' + k + '）：' + seen[k].join('、')
+           + ' —— 各组报告须增加不少于 300 字的方案对比章节。\n';
+      });
+    }
+    md += '\n## 未选题\n\n'
+      + (GROUPS.filter(g => !(ST.groups[g] || {}).topic).join('、') || '无') + '\n';
+  }
+  download('选题登记_' + today() + '.md', md, 'text/markdown;charset=utf-8');
+}
+function importJson(file){
+  const rd = new FileReader();
+  rd.onload = () => {
+    try{
+      const s = JSON.parse(rd.result);
+      if(!s || !s.groups) throw new Error('格式不正确');
+      const n = Object.keys(s.groups).length;
+      if(!confirm('读到 ' + n + ' 条选题记录，确认覆盖当前数据？')) return;
+      ST = {ver:1, updated: s.updated || Date.now(), groups: s.groups};
+      save(); render();
+      alert('导入成功，共 ' + n + ' 条。');
+    }catch(e){
+      alert('导入失败：' + e.message);
+    }
+  };
+  rd.readAsText(file, 'utf-8');
+}
+
+/* ---------------- 作品骨架代码 ---------------- */
+const SKELETON = [
+"/* 交互作品最小骨架 —— 存为 demo.js，与 index.html 同目录 */",
+"/* 注意：file:// 打开时不支持 ES module，请用普通 <script src> 引入 */",
+"",
+"function runDemo(host){",
+"  // 1) 建立稳定的 id 前缀，避免多人合并时 id 冲突",
+"  const id = 'demo_' + Math.random().toString(36).slice(2, 8) + '_';",
+"",
+"  // 2) 拼 DOM：画布 + 滑块 + 指标 + 解读区",
+"  host.innerHTML =",
+"    '<div style=\"display:flex;gap:10px;flex-wrap:wrap\">' +",
+"    '  <canvas id=\"' + id + 'cv\" width=\"360\" height=\"280\"' +",
+"    '          style=\"border:1px solid #ddd;border-radius:8px\"></canvas>' +",
+"    '  <div style=\"flex:1;min-width:180px\">' +",
+"    '    <label>参数名：<input type=\"range\" id=\"' + id + 's\" ' +",
+"    '           min=\"1\" max=\"100\" step=\"1\" value=\"50\"></label>' +",
+"    '    <div>当前值：<b id=\"' + id + 'sv\">50</b></div>' +",
+"    '    <div style=\"margin-top:10px\">' +",
+"    '      关键指标1：<b id=\"' + id + 'p\">—</b><br>' +",
+"    '      关键指标2：<b id=\"' + id + 'q\">—</b>' +",
+"    '    </div>' +",
+"    '  </div>' +",
+"    '</div>' +",
+"    '<div id=\"' + id + 'n\" style=\"margin-top:10px;font-size:13px;line-height:1.7\"></div>';",
+"",
+"  const g = k => document.getElementById(id + k);",
+"  const cv = g('cv'), ctx = cv.getContext('2d');",
+"",
+"  // 3) 固定随机种子，保证结果可复现（报告里的数字要能对上）",
+"  let seed = 42;",
+"  function rnd(){ seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }",
+"",
+"  // 4) 重算 + 重绘 + 改写解读，三者必须同步",
+"  function update(){",
+"    const v = parseFloat(g('s').value);",
+"    g('sv').textContent = v;",
+"",
+"    ctx.clearRect(0, 0, cv.width, cv.height);",
+"    /* TODO: 在这里画你的图 —— 曲线 / 散点 / 热力图 / 决策边界 */",
+"    ctx.fillStyle = '#185fa5';",
+"    for(let i = 0; i < 60; i++){",
+"      const x = i / 59 * cv.width, y = cv.height / 2 - Math.sin(i / 59 * v * 0.2) * 90;",
+"      ctx.beginPath(); ctx.arc(x, y, 2.5, 0, 6.284); ctx.fill();",
+"    }",
+"",
+"    /* TODO: 在这里算真实指标，不要写死 */",
+"    g('p').textContent = v.toFixed(1);",
+"    g('q').textContent = (Math.sin(v * 0.2) * 100).toFixed(1) + '%';",
+"",
+"    /* TODO: 解读要随参数变化，把「为什么」讲清楚 */",
+"    g('n').innerHTML = '当前参数为 <b>' + v + '</b>，……';",
+"  }",
+"",
+"  g('s').addEventListener('input', update);",
+"  update();   // 必须带默认值运行一次，页面上不能留空白画布",
+"}",
+"",
+"//   <div id=\"app\"></div>",
+"//   \x3cscript src=\"demo.js\">\x3c/script>",
+"//   \x3cscript>runDemo(document.getElementById('app'))\x3c/script>",
+"",
+"/* 提交前自检：",
+"   1. 双击 index.html 能否直接打开（不依赖服务器、不联网）",
+"   2. 控制台有无报错",
+"   3. 滑块推到最左/最右，指标是否出现 NaN、Infinity 或空白图",
+"   4. 页面上的数字能否与你 Python 脚本的输出对上",
+"*/"
+].join('\n');
+
+function copyText(txt){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(txt)
+      .then(() => true)
+      .catch(() => fallbackCopy(txt));
+  }
+  return Promise.resolve(fallbackCopy(txt));
+}
+function fallbackCopy(txt){
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
+}
+function showSkeleton(){
+  document.getElementById('modal').innerHTML =
+    '<h3>交互作品最小骨架</h3>'
+    + '<div class="hint">复制后保存为 <code>demo.js</code>，再照注释写 <code>index.html</code>。'
+    + '这套结构保证「拖滑块 → 重算 → 重绘 → 改写解读」四件事同步。</div>'
+    + '<pre style="background:#2c2c2a;color:#e8e8e4;padding:14px;border-radius:10px;'
+    + 'overflow:auto;font-size:12px;line-height:1.6;max-height:52vh">'
+    + SKELETON.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))
+    + '</pre>'
+    + '<div class="m-act">'
+    + '<span class="chip" id="sk-copy">复制到剪贴板</span>'
+    + '<button class="btn" id="sk-close">关闭</button></div>';
+  document.getElementById('mask').classList.remove('hide');
+  document.getElementById('sk-close').onclick = closeForm;
+  document.getElementById('sk-copy').onclick = function(){
+    const self = this;
+    copyText(SKELETON).then(function(ok){
+      self.textContent = ok ? '已复制 ✓' : '复制失败，请手动选择';
+    });
+  };
+}
+
+/* ---------------- 事件绑定 ---------------- */
+document.getElementById('q').addEventListener('input', e => {
+  view.q = e.target.value.trim(); render();
+});
+document.querySelectorAll('.chip[data-t]').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.chip[data-t]').forEach(x => x.classList.remove('on'));
+    c.classList.add('on'); view.tier = c.dataset.t; render();
+  });
+});
+document.querySelectorAll('.chip[data-l]').forEach(c => {
+  if(!c.dataset.l) return;
+  c.addEventListener('click', () => {
+    const on = c.classList.contains('on');
+    document.querySelectorAll('.chip[data-l]').forEach(x => {
+      if(x.dataset.l) x.classList.remove('on');
+    });
+    if(!on){ c.classList.add('on'); view.layer = c.dataset.l; }
+    else view.layer = 'all';
+    render();
+  });
+});
+document.getElementById('sort').addEventListener('change', e => {
+  view.sort = e.target.value; render();
+});
+document.getElementById('onlyFree').addEventListener('change', e => {
+  view.onlyFree = e.target.checked; render();
+});
+
+document.getElementById('toggleBoard').addEventListener('click', e => {
+  const b = document.getElementById('board');
+  b.classList.toggle('hide');
+  e.target.classList.toggle('on', !b.classList.contains('hide'));
+});
+
+document.getElementById('grid').addEventListener('click', e => {
+  const btn = e.target.closest('[data-pick]');
+  if(btn) openForm(btn.dataset.pick);
+});
+document.getElementById('grouplist').addEventListener('click', e => {
+  const u = e.target.closest('[data-unlock]');
+  if(!u) return;
+  const g = u.dataset.unlock;
+  const r = ST.groups[g];
+  if(!r) return;
+  r.teacherOk = !r.teacherOk;
+  save(); renderBoard();
+});
+
+document.getElementById('mask').addEventListener('click', e => {
+  if(e.target.id === 'mask') closeForm();
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeForm();
+});
+
+document.getElementById('btnExpJson').onclick = exportJson;
+document.getElementById('btnExpCsv').onclick = exportCsv;
+document.getElementById('btnExpMd').onclick = exportMd;
+document.getElementById('btnImp').onclick = () => document.getElementById('fileImp').click();
+document.getElementById('fileImp').addEventListener('change', e => {
+  if(e.target.files[0]){
+    importJson(e.target.files[0]);
+    e.target.value = '';
+  }
+});
+document.getElementById('btnSkeleton').onclick = showSkeleton;
+document.getElementById('btnCopyRepos').onclick = function(){
+  const self = this;
+  const rs = toRows().map(r => r.group + ' ' + r.algo + ' ' + r.repo).join('\n');
+  copyText(rs).then(function(ok){
+    self.textContent = ok ? '已复制 ✓' : '复制失败';
+    setTimeout(function(){ self.textContent = '复制全部仓库地址'; }, 1800);
+  });
+};
+document.getElementById('btnUnlockAll').onclick = () => {
+  GROUPS.forEach(g => { if(ST.groups[g]) ST.groups[g].teacherOk = false; });
+  save(); renderBoard();
+};
+document.getElementById('btnClearAll').onclick = () => {
+  if(!confirm('确认清空全部 10 组选题？此操作不可撤销。')) return;
+  ST.groups = {}; save(); render();
+};
+
+render();
+</script>
+</body>
+</html>

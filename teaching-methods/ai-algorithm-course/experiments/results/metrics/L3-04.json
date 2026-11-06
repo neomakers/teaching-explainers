@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "exp_id": "L3-04",
+    "algo": "t-SNE / UMAP 流形可视化",
+    "layer": "L3 降维与矩阵分解",
+    "purpose": "比较线性与非线性降维对局部邻域结构的保持能力，评估可视化质量",
+    "dataset": "digits 前 800 个样本（10 类）；digits(工件图像类比): X(1797, 64), y(1797,), 类别[178, 182, 177, 183, 181, 182, 181, 179, 174, 180]  像素已缩放到 [0,1]",
+    "baselines": [
+      "PCA（线性降维，2 维）",
+      "原始 64 维（上界参考）"
+    ],
+    "metrics": [
+      "trustworthiness(k=5)",
+      "嵌入空间 1-NN 准确率",
+      "耗时"
+    ],
+    "seed": 42,
+    "params": {
+      "n_samples": 800,
+      "perplexity": 30,
+      "init": "pca",
+      "tsne_iter": 1000
+    },
+    "env": {
+      "python": "3.13.14",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "numpy": "2.5.4",
+      "sklearn": "1.9.1"
+    }
+  },
+  "rows": [
+    {
+      "方法": "PCA(2维)",
+      "trustworthiness": 0.8031679292929292,
+      "嵌入空间1NN准确率": 1.0,
+      "说明": "1-NN 准确率越接近原始空间 1.000 越好"
+    },
+    {
+      "方法": "t-SNE(2维)",
+      "trustworthiness": 0.9951647727272728,
+      "嵌入空间1NN准确率": 1.0,
+      "说明": "1-NN 准确率越接近原始空间 1.000 越好"
+    }
+  ],
+  "timings": {
+    "PCA fit/transform": 0.01414699999804725,
+    "t-SNE fit/transform": 3.25587959999757,
+    "参考：原始 64 维 1-NN": 0.030099699997663265
+  },
+  "notes": [
+    "UMAP 未安装（ModuleNotFoundError），本次跳过。替代验证方式：① `pip install umap-learn` 后重跑本脚本即可自动纳入；② 若无法联网安装，可用 t-SNE + PCA 的对比结论外推：UMAP 通常耗时低于 t-SNE、且对全局结构的保持优于 t-SNE，但嵌入空间的距离仍不可定量解释。",
+    "t-SNE 的 trustworthiness 0.9952 高于 PCA 的 0.8032，嵌入空间 1-NN 准确率 1.000 vs 1.000，说明非线性流形方法确实更好地保留了局部邻域。",
+    "重要限制：t-SNE 只产出这张图，没有可用于新样本的 transform 接口，因此不能直接作为模型的特征工程步骤；嵌入坐标之间的距离也没有定量含义。",
+    "教学建议：先用 PCA 看全局结构，再用 t-SNE/UMAP 看簇的分离情况，两者互补。"
+  ],
+  "figures": [
+    "figures/l3_04_manifold.svg"
+  ]
+}

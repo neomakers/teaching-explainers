@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img">
+<title>K-Means：初始化策略对结果的影响</title>
+<rect x="0" y="0" width="720" height="340" fill="#ffffff"/>
+<text x="16" y="26" font-family="system-ui,sans-serif" font-size="14" fill="#2c2c2a">K-Means：初始化策略对结果的影响</text>
+<line x1="50" x2="696" y1="280.0" y2="280.0" stroke="#e3e1da"/>
+<text x="46" y="284.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0</text>
+<line x1="50" x2="696" y1="222.0" y2="222.0" stroke="#e3e1da"/>
+<text x="46" y="226.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">1989.269</text>
+<line x1="50" x2="696" y1="164.0" y2="164.0" stroke="#e3e1da"/>
+<text x="46" y="168.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">3978.538</text>
+<line x1="50" x2="696" y1="106.0" y2="106.0" stroke="#e3e1da"/>
+<text x="46" y="110.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">5967.808</text>
+<line x1="50" x2="696" y1="48.0" y2="48.0" stroke="#e3e1da"/>
+<text x="46" y="52.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">7957.077</text>
+<rect x="70.1" y="238.3" width="49.9" height="41.7" fill="#185fa5"/>
+<rect x="120.0" y="280.0" width="49.9" height="0.0" fill="#0f6e56"/>
+<text x="120.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">自实现 KMeans(k-means++)</text>
+<rect x="198.1" y="48.0" width="49.9" height="232.0" fill="#185fa5"/>
+<rect x="248.0" y="280.0" width="49.9" height="0.0" fill="#0f6e56"/>
+<text x="248.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">sklearn KMeans(random, n_init=1)</text>
+<rect x="326.1" y="238.3" width="49.9" height="41.7" fill="#185fa5"/>
+<rect x="376.0" y="280.0" width="49.9" height="0.0" fill="#0f6e56"/>
+<text x="376.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">sklearn KMeans(random, n_init=10)</text>
+<rect x="454.1" y="238.3" width="49.9" height="41.7" fill="#185fa5"/>
+<rect x="504.0" y="280.0" width="49.9" height="0.0" fill="#0f6e56"/>
+<text x="504.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">sklearn KMeans(k-means++, n_init=1)</text>
+<rect x="582.1" y="238.3" width="49.9" height="41.7" fill="#185fa5"/>
+<rect x="632.0" y="280.0" width="49.9" height="0.0" fill="#0f6e56"/>
+<text x="632.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">sklearn KMeans(k-means++, n_init=10)</text>
+<line x1="50" x2="696" y1="280" y2="280" stroke="#b4b2a9"/>
+<rect x="50" y="314" width="10" height="10" fill="#185fa5"/>
+<text x="64" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">inertia</text>
+<rect x="123" y="314" width="10" height="10" fill="#0f6e56"/>
+<text x="137" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">ARI</text>
+<text x="14" y="40" font-family="system-ui,sans-serif" font-size="11" fill="#888780">指标值</text>
+</svg>

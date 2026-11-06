@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img">
+<title>MLP：结构与学习率对准确率的影响</title>
+<rect x="0" y="0" width="720" height="340" fill="#ffffff"/>
+<text x="16" y="26" font-family="system-ui,sans-serif" font-size="14" fill="#2c2c2a">MLP：结构与学习率对准确率的影响</text>
+<line x1="50" x2="696" y1="280.0" y2="280.0" stroke="#e3e1da"/>
+<text x="46" y="284.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0</text>
+<line x1="50" x2="696" y1="222.0" y2="222.0" stroke="#e3e1da"/>
+<text x="46" y="226.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.246</text>
+<line x1="50" x2="696" y1="164.0" y2="164.0" stroke="#e3e1da"/>
+<text x="46" y="168.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.492</text>
+<line x1="50" x2="696" y1="106.0" y2="106.0" stroke="#e3e1da"/>
+<text x="46" y="110.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.737</text>
+<line x1="50" x2="696" y1="48.0" y2="48.0" stroke="#e3e1da"/>
+<text x="46" y="52.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.983</text>
+<rect x="67.7" y="60.7" width="83.2" height="219.3" fill="#185fa5"/>
+<text x="109.3" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">(32,)/lr=0.001</text>
+<rect x="174.4" y="52.8" width="83.2" height="227.2" fill="#185fa5"/>
+<text x="216.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">(32,)/lr=0.01</text>
+<rect x="281.1" y="54.1" width="83.2" height="225.9" fill="#185fa5"/>
+<text x="322.7" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">(64, 32)/lr=0.001</text>
+<rect x="387.7" y="51.9" width="83.2" height="228.1" fill="#185fa5"/>
+<text x="429.3" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">(64, 32)/lr=0.01</text>
+<rect x="494.4" y="48.0" width="83.2" height="232.0" fill="#185fa5"/>
+<text x="536.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">(128, 64)/lr=0.001</text>
+<rect x="601.1" y="50.6" width="83.2" height="229.4" fill="#185fa5"/>
+<text x="642.7" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">(128, 64)/lr=0.01</text>
+<line x1="50" x2="696" y1="280" y2="280" stroke="#b4b2a9"/>
+<rect x="50" y="314" width="10" height="10" fill="#185fa5"/>
+<text x="64" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">测试准确率</text>
+<text x="14" y="40" font-family="system-ui,sans-serif" font-size="11" fill="#888780">准确率</text>
+</svg>

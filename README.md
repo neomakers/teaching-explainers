@@ -11,6 +11,7 @@
 | 分类 | 类型 | 标题 | 文件 | 要点 | 备注 | 日期 |
 |---|---|---|---|---|---|---|
 | 计算机视觉 | 讲解页 | ArUco 码基本原理 | [aruco-marker-principles.html](computer-vision/aruco-marker-principles.html) | 结构解剖、汉明纠错字典、8 步检测流水线、单应归一化、PnP 位姿解算、OpenCV 代码与误差清单 | 依据 OpenCV 4.x 官方文档 | 2026-11-06 |
+| 教学法与课程 | 课程包 | 《人工智能技术及应用》交互式课程平台 | [ai-algorithm-course.html](teaching-methods/ai-algorithm-course.html) | 8 层 30 算法、30 组内嵌交互演示、7 标签大纲、分组选题与五维难度系数评价；另含 30 个可复现 Python 实验与验收脚本 | 交叉: ai-deployment, programming-fundamentals；[全套配套资产](teaching-methods/ai-algorithm-course/) | 2026-11-06 |
 
 最近速记：**0 条**（见 [ideas/INDEX.md](ideas/INDEX.md)）。
 

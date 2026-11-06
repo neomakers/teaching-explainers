@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img">
+<title>协方差特征值谱（前 30 个，对数尺度已省略）</title>
+<rect width="720" height="340" fill="#ffffff"/>
+<text x="14" y="26" font-family="system-ui,sans-serif" font-size="14" fill="#2c2c2a">协方差特征值谱（前 30 个，对数尺度已省略）</text>
+<line x1="50" x2="696" y1="280.0" y2="280.0" stroke="#e3e1da"/>
+<text x="46" y="284.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.017</text>
+<line x1="50" x2="696" y1="222.0" y2="222.0" stroke="#e3e1da"/>
+<text x="46" y="226.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.204</text>
+<line x1="50" x2="696" y1="164.0" y2="164.0" stroke="#e3e1da"/>
+<text x="46" y="168.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.392</text>
+<line x1="50" x2="696" y1="106.0" y2="106.0" stroke="#e3e1da"/>
+<text x="46" y="110.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.579</text>
+<line x1="50" x2="696" y1="48.0" y2="48.0" stroke="#e3e1da"/>
+<text x="46" y="52.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.767</text>
+<polyline points="56.0,48.0 78.1,76.3 100.1,108.1 122.2,132.2 144.3,187.2 166.3,214.1 188.4,221.1 210.5,235.7 232.6,243.8 254.6,247.2 276.7,255.3 298.8,256.7 320.8,258.8 342.9,263.2 365.0,264.6 387.0,267.9 409.1,270.0 431.2,272.4 453.2,273.3 475.3,274.4 497.4,274.8 519.4,276.3 541.5,276.5 563.6,276.8 585.7,277.5 607.7,278.5 629.8,279.1 651.9,279.5 673.9,279.8 696.0,280.0" fill="none" stroke="#185fa5" stroke-width="2"/>
+<circle cx="56.0" cy="48.0" r="2.6" fill="#185fa5"/>
+<circle cx="78.1" cy="76.3" r="2.6" fill="#185fa5"/>
+<circle cx="100.1" cy="108.1" r="2.6" fill="#185fa5"/>
+<circle cx="122.2" cy="132.2" r="2.6" fill="#185fa5"/>
+<circle cx="144.3" cy="187.2" r="2.6" fill="#185fa5"/>
+<circle cx="166.3" cy="214.1" r="2.6" fill="#185fa5"/>
+<circle cx="188.4" cy="221.1" r="2.6" fill="#185fa5"/>
+<circle cx="210.5" cy="235.7" r="2.6" fill="#185fa5"/>
+<circle cx="232.6" cy="243.8" r="2.6" fill="#185fa5"/>
+<circle cx="254.6" cy="247.2" r="2.6" fill="#185fa5"/>
+<circle cx="276.7" cy="255.3" r="2.6" fill="#185fa5"/>
+<circle cx="298.8" cy="256.7" r="2.6" fill="#185fa5"/>
+<circle cx="320.8" cy="258.8" r="2.6" fill="#185fa5"/>
+<circle cx="342.9" cy="263.2" r="2.6" fill="#185fa5"/>
+<circle cx="365.0" cy="264.6" r="2.6" fill="#185fa5"/>
+<circle cx="387.0" cy="267.9" r="2.6" fill="#185fa5"/>
+<circle cx="409.1" cy="270.0" r="2.6" fill="#185fa5"/>
+<circle cx="431.2" cy="272.4" r="2.6" fill="#185fa5"/>
+<circle cx="453.2" cy="273.3" r="2.6" fill="#185fa5"/>
+<circle cx="475.3" cy="274.4" r="2.6" fill="#185fa5"/>
+<circle cx="497.4" cy="274.8" r="2.6" fill="#185fa5"/>
+<circle cx="519.4" cy="276.3" r="2.6" fill="#185fa5"/>
+<circle cx="541.5" cy="276.5" r="2.6" fill="#185fa5"/>
+<circle cx="563.6" cy="276.8" r="2.6" fill="#185fa5"/>
+<circle cx="585.7" cy="277.5" r="2.6" fill="#185fa5"/>
+<circle cx="607.7" cy="278.5" r="2.6" fill="#185fa5"/>
+<circle cx="629.8" cy="279.1" r="2.6" fill="#185fa5"/>
+<circle cx="651.9" cy="279.5" r="2.6" fill="#185fa5"/>
+<circle cx="673.9" cy="279.8" r="2.6" fill="#185fa5"/>
+<circle cx="696.0" cy="280.0" r="2.6" fill="#185fa5"/>
+<polyline points="56.0,48.0 78.1,76.3 100.1,108.1 122.2,132.2 144.3,187.2 166.3,214.1 188.4,221.1 210.5,235.7 232.6,243.8 254.6,247.2 276.7,255.3 298.8,256.7 320.8,258.8 342.9,263.2 365.0,264.6 387.0,267.9 409.1,270.0 431.2,272.4 453.2,273.3 475.3,274.4 497.4,274.8 519.4,276.3 541.5,276.5 563.6,276.8 585.7,277.5 607.7,278.5 629.8,279.1 651.9,279.5 673.9,279.8 696.0,280.0" fill="none" stroke="#0f6e56" stroke-width="2"/>
+<circle cx="56.0" cy="48.0" r="2.6" fill="#0f6e56"/>
+<circle cx="78.1" cy="76.3" r="2.6" fill="#0f6e56"/>
+<circle cx="100.1" cy="108.1" r="2.6" fill="#0f6e56"/>
+<circle cx="122.2" cy="132.2" r="2.6" fill="#0f6e56"/>
+<circle cx="144.3" cy="187.2" r="2.6" fill="#0f6e56"/>
+<circle cx="166.3" cy="214.1" r="2.6" fill="#0f6e56"/>
+<circle cx="188.4" cy="221.1" r="2.6" fill="#0f6e56"/>
+<circle cx="210.5" cy="235.7" r="2.6" fill="#0f6e56"/>
+<circle cx="232.6" cy="243.8" r="2.6" fill="#0f6e56"/>
+<circle cx="254.6" cy="247.2" r="2.6" fill="#0f6e56"/>
+<circle cx="276.7" cy="255.3" r="2.6" fill="#0f6e56"/>
+<circle cx="298.8" cy="256.7" r="2.6" fill="#0f6e56"/>
+<circle cx="320.8" cy="258.8" r="2.6" fill="#0f6e56"/>
+<circle cx="342.9" cy="263.2" r="2.6" fill="#0f6e56"/>
+<circle cx="365.0" cy="264.6" r="2.6" fill="#0f6e56"/>
+<circle cx="387.0" cy="267.9" r="2.6" fill="#0f6e56"/>
+<circle cx="409.1" cy="270.0" r="2.6" fill="#0f6e56"/>
+<circle cx="431.2" cy="272.4" r="2.6" fill="#0f6e56"/>
+<circle cx="453.2" cy="273.3" r="2.6" fill="#0f6e56"/>
+<circle cx="475.3" cy="274.4" r="2.6" fill="#0f6e56"/>
+<circle cx="497.4" cy="274.8" r="2.6" fill="#0f6e56"/>
+<circle cx="519.4" cy="276.3" r="2.6" fill="#0f6e56"/>
+<circle cx="541.5" cy="276.5" r="2.6" fill="#0f6e56"/>
+<circle cx="563.6" cy="276.8" r="2.6" fill="#0f6e56"/>
+<circle cx="585.7" cy="277.5" r="2.6" fill="#0f6e56"/>
+<circle cx="607.7" cy="278.5" r="2.6" fill="#0f6e56"/>
+<circle cx="629.8" cy="279.1" r="2.6" fill="#0f6e56"/>
+<circle cx="651.9" cy="279.5" r="2.6" fill="#0f6e56"/>
+<circle cx="673.9" cy="279.8" r="2.6" fill="#0f6e56"/>
+<circle cx="696.0" cy="280.0" r="2.6" fill="#0f6e56"/>
+<text x="56.0" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">1</text>
+<text x="122.2" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">4</text>
+<text x="188.4" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">7</text>
+<text x="254.6" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">10</text>
+<text x="320.8" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">13</text>
+<text x="387.0" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">16</text>
+<text x="453.2" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">19</text>
+<text x="519.4" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">22</text>
+<text x="585.7" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">25</text>
+<text x="651.9" y="298" font-family="system-ui,sans-serif" font-size="10" fill="#5f5e5a" text-anchor="middle">28</text>
+<line x1="50" x2="696" y1="280" y2="280" stroke="#b4b2a9"/>
+<rect x="50" y="314" width="10" height="10" fill="#185fa5"/>
+<text x="64" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">自实现 Jacobi</text>
+<rect x="144" y="314" width="10" height="10" fill="#0f6e56"/>
+<text x="158" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">LAPACK eigh</text>
+<text x="696" y="336" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">主成分序号</text>
+</svg>

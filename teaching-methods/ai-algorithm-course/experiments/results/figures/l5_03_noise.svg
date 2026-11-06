@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img">
+<title>标签噪声下的测试准确率衰减</title>
+<rect x="0" y="0" width="720" height="340" fill="#ffffff"/>
+<text x="16" y="26" font-family="system-ui,sans-serif" font-size="14" fill="#2c2c2a">标签噪声下的测试准确率衰减</text>
+<line x1="50" x2="696" y1="280.0" y2="280.0" stroke="#e3e1da"/>
+<text x="46" y="284.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0</text>
+<line x1="50" x2="696" y1="222.0" y2="222.0" stroke="#e3e1da"/>
+<text x="46" y="226.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.24</text>
+<line x1="50" x2="696" y1="164.0" y2="164.0" stroke="#e3e1da"/>
+<text x="46" y="168.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.48</text>
+<line x1="50" x2="696" y1="106.0" y2="106.0" stroke="#e3e1da"/>
+<text x="46" y="110.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.719</text>
+<line x1="50" x2="696" y1="48.0" y2="48.0" stroke="#e3e1da"/>
+<text x="46" y="52.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.959</text>
+<rect x="60.7" y="57.9" width="33.3" height="222.1" fill="#185fa5"/>
+<text x="77.3" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">决策树(单棵)@0%</text>
+<rect x="103.4" y="83.4" width="33.3" height="196.6" fill="#185fa5"/>
+<text x="120.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">决策树(单棵)@5%</text>
+<rect x="146.0" y="83.4" width="33.3" height="196.6" fill="#185fa5"/>
+<text x="162.7" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">决策树(单棵)@10%</text>
+<rect x="188.7" y="52.2" width="33.3" height="227.8" fill="#185fa5"/>
+<text x="205.3" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">随机森林(200)@0%</text>
+<rect x="231.4" y="49.4" width="33.3" height="230.6" fill="#185fa5"/>
+<text x="248.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">随机森林(200)@5%</text>
+<rect x="274.0" y="50.8" width="33.3" height="229.2" fill="#185fa5"/>
+<text x="290.7" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">随机森林(200)@10%</text>
+<rect x="316.7" y="49.4" width="33.3" height="230.6" fill="#185fa5"/>
+<text x="333.3" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">AdaBoost(200)@0%</text>
+<rect x="359.4" y="48.0" width="33.3" height="232.0" fill="#185fa5"/>
+<text x="376.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">AdaBoost(200)@5%</text>
+<rect x="402.0" y="53.7" width="33.3" height="226.3" fill="#185fa5"/>
+<text x="418.7" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">AdaBoost(200)@10%</text>
+<rect x="444.7" y="50.8" width="33.3" height="229.2" fill="#185fa5"/>
+<text x="461.3" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">GradientBoosting(200)@0%</text>
+<rect x="487.4" y="57.9" width="33.3" height="222.1" fill="#185fa5"/>
+<text x="504.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">GradientBoosting(200)@5%</text>
+<rect x="530.0" y="50.8" width="33.3" height="229.2" fill="#185fa5"/>
+<text x="546.7" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">GradientBoosting(200)@10%</text>
+<rect x="572.7" y="48.0" width="33.3" height="232.0" fill="#185fa5"/>
+<text x="589.3" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">HistGradientBoosting(200)@0%</text>
+<rect x="615.4" y="49.4" width="33.3" height="230.6" fill="#185fa5"/>
+<text x="632.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">HistGradientBoosting(200)@5%</text>
+<rect x="658.0" y="59.3" width="33.3" height="220.7" fill="#185fa5"/>
+<text x="674.7" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">HistGradientBoosting(200)@10%</text>
+<line x1="50" x2="696" y1="280" y2="280" stroke="#b4b2a9"/>
+<rect x="50" y="314" width="10" height="10" fill="#185fa5"/>
+<text x="64" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">测试准确率</text>
+<text x="14" y="40" font-family="system-ui,sans-serif" font-size="11" fill="#888780">准确率</text>
+</svg>

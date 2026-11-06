@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img">
+<title>生成样本与真实分布的差异（越小越像）</title>
+<rect x="0" y="0" width="720" height="340" fill="#ffffff"/>
+<text x="16" y="26" font-family="system-ui,sans-serif" font-size="14" fill="#2c2c2a">生成样本与真实分布的差异（越小越像）</text>
+<line x1="50" x2="696" y1="280.0" y2="280.0" stroke="#e3e1da"/>
+<text x="46" y="284.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0</text>
+<line x1="50" x2="696" y1="222.0" y2="222.0" stroke="#e3e1da"/>
+<text x="46" y="226.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.098</text>
+<line x1="50" x2="696" y1="164.0" y2="164.0" stroke="#e3e1da"/>
+<text x="46" y="168.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.195</text>
+<line x1="50" x2="696" y1="106.0" y2="106.0" stroke="#e3e1da"/>
+<text x="46" y="110.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.293</text>
+<line x1="50" x2="696" y1="48.0" y2="48.0" stroke="#e3e1da"/>
+<text x="46" y="52.0" font-family="system-ui,sans-serif" font-size="11" fill="#888780" text-anchor="end">0.39</text>
+<rect x="66.1" y="48.0" width="35.7" height="232.0" fill="#185fa5"/>
+<rect x="101.7" y="227.8" width="35.7" height="52.2" fill="#0f6e56"/>
+<text x="101.7" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">GMM(k=1)</text>
+<rect x="157.5" y="205.0" width="35.7" height="75.0" fill="#185fa5"/>
+<rect x="193.1" y="277.0" width="35.7" height="3.0" fill="#0f6e56"/>
+<text x="193.1" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">GMM(k=2)</text>
+<rect x="248.9" y="223.7" width="35.7" height="56.3" fill="#185fa5"/>
+<rect x="284.6" y="275.8" width="35.7" height="4.2" fill="#0f6e56"/>
+<text x="284.6" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">GMM(k=3)</text>
+<rect x="340.3" y="222.9" width="35.7" height="57.1" fill="#185fa5"/>
+<rect x="376.0" y="277.7" width="35.7" height="2.3" fill="#0f6e56"/>
+<text x="376.0" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">GMM(k=5)</text>
+<rect x="431.8" y="215.0" width="35.7" height="65.0" fill="#185fa5"/>
+<rect x="467.4" y="276.4" width="35.7" height="3.6" fill="#0f6e56"/>
+<text x="467.4" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">KDE(bw=0.1)</text>
+<rect x="523.2" y="209.9" width="35.7" height="70.1" fill="#185fa5"/>
+<rect x="558.9" y="275.3" width="35.7" height="4.7" fill="#0f6e56"/>
+<text x="558.9" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">KDE(bw=0.3)</text>
+<rect x="614.6" y="164.2" width="35.7" height="115.8" fill="#185fa5"/>
+<rect x="650.3" y="263.2" width="35.7" height="16.8" fill="#0f6e56"/>
+<text x="650.3" y="298" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a" text-anchor="middle">KDE(bw=0.8)</text>
+<line x1="50" x2="696" y1="280" y2="280" stroke="#b4b2a9"/>
+<rect x="50" y="314" width="10" height="10" fill="#185fa5"/>
+<text x="64" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">1-Wasserstein</text>
+<rect x="165" y="314" width="10" height="10" fill="#0f6e56"/>
+<text x="179" y="322" font-family="system-ui,sans-serif" font-size="11" fill="#5f5e5a">MMD(RBF)</text>
+<text x="14" y="40" font-family="system-ui,sans-serif" font-size="11" fill="#888780">分布差异</text>
+</svg>

@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "exp_id": "L6-01",
+    "algo": "K-Means",
+    "layer": "L6 无监督学习",
+    "purpose": "验证 k-means++ 初始化的稳定性优势，并对照自实现的目标函数与聚类质量",
+    "dataset": "make_blobs(n=900, centers=4)；blobs(工况分型): X(900, 2), y(900,), 类别[225, 225, 225, 225]  cluster_std=0.9",
+    "baselines": [
+      "随机初始化",
+      "sklearn KMeans(k-means++)"
+    ],
+    "metrics": [
+      "inertia(簇内平方和)",
+      "ARI",
+      "多次运行 inertia 标准差",
+      "耗时"
+    ],
+    "seed": 42,
+    "params": {
+      "k": 4,
+      "init": [
+        "random",
+        "k-means++"
+      ],
+      "n_init": [
+        1,
+        10
+      ]
+    },
+    "env": {
+      "python": "3.13.14",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "numpy": "2.5.4",
+      "sklearn": "1.9.1"
+    }
+  },
+  "rows": [
+    {
+      "方法": "自实现 KMeans(k-means++)",
+      "inertia": 1431.1476379956812,
+      "ARI": 1.0,
+      "稳定性标准差": NaN
+    },
+    {
+      "方法": "sklearn KMeans(random, n_init=1)",
+      "inertia": 7957.076920257417,
+      "ARI": 0.778050008391318,
+      "稳定性标准差": 8712.40599502307
+    },
+    {
+      "方法": "sklearn KMeans(random, n_init=10)",
+      "inertia": 1431.1476379956812,
+      "ARI": 1.0,
+      "稳定性标准差": 2.033691978340166e-13
+    },
+    {
+      "方法": "sklearn KMeans(k-means++, n_init=1)",
+      "inertia": 1431.1476379956812,
+      "ARI": 1.0,
+      "稳定性标准差": 1.4380373887290168e-13
+    },
+    {
+      "方法": "sklearn KMeans(k-means++, n_init=10)",
+      "inertia": 1431.1476379956814,
+      "ARI": 1.0,
+      "稳定性标准差": 2.2737367544323206e-13
+    }
+  ],
+  "timings": {
+    "自实现 KMeans(k-means++, n_init=10)": 0.01999430000068969,
+    "random n_init=1 rep0": 0.091597599999659,
+    "random n_init=1 rep1": 0.007613999998284271,
+    "random n_init=1 rep2": 0.007990800000698073,
+    "random n_init=1 rep3": 0.006621599997743033,
+    "random n_init=1 rep4": 0.006415799998649163,
+    "random n_init=10 rep0": 0.036772200000996236,
+    "random n_init=10 rep1": 0.030892800001311116,
+    "random n_init=10 rep2": 0.03284889999849838,
+    "random n_init=10 rep3": 0.029888599998230347,
+    "random n_init=10 rep4": 0.03572150000036345,
+    "k-means++ n_init=1 rep0": 0.00572449999890523,
+    "k-means++ n_init=1 rep1": 0.007185400001617381,
+    "k-means++ n_init=1 rep2": 0.006245299999136478,
+    "k-means++ n_init=1 rep3": 0.006546099997649435,
+    "k-means++ n_init=1 rep4": 0.007193800000095507,
+    "k-means++ n_init=10 rep0": 0.054035799999837764,
+    "k-means++ n_init=10 rep1": 0.06576510000013513,
+    "k-means++ n_init=10 rep2": 0.06373029999667779,
+    "k-means++ n_init=10 rep3": 0.06999469999936991,
+    "k-means++ n_init=10 rep4": 0.07082710000031511
+  },
+  "notes": [
+    "单次初始化时，随机初始化 inertia 7957.1（多次运行标准差 8712.4），k-means++ 1431.1（标准差 0.0）：后者既更接近全局最优，也更稳定。|",
+    "n_init=10 后两种初始化的差距基本消失——多次重启是廉价且有效的保险，在算力允许时应始终开启。",
+    "自实现与 sklearn 的 inertia 一致（差值见表中首行对比），说明交替优化的两步（分配/更新质心）实现正确；ARI≈1 表示四个簇被完全正确恢复。"
+  ],
+  "figures": [
+    "figures/l6_01_kmeans.svg"
+  ]
+}

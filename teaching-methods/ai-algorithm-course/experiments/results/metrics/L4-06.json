@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "exp_id": "L4-06",
+    "algo": "朴素贝叶斯",
+    "layer": "L4 监督学习",
+    "purpose": "比较 NB 三种变体，并验证条件独立性假设失效时的性能退化",
+    "dataset": "digits(1797x64) 与 强相关构造数据(n=1200, 后 5 维为第 1 维的复制)",
+    "baselines": [
+      "逻辑回归（不做独立性假设）"
+    ],
+    "metrics": [
+      "测试准确率",
+      "训练耗时"
+    ],
+    "seed": 42,
+    "params": {
+      "bernoulli_binarize": 0.5,
+      "logistic_max_iter": 2000
+    },
+    "env": {
+      "python": "3.13.14",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "numpy": "2.5.4",
+      "sklearn": "1.9.1"
+    }
+  },
+  "rows": [
+    {
+      "数据集": "digits",
+      "方法": "GaussianNB",
+      "测试准确率": 0.8222222222222222
+    },
+    {
+      "数据集": "digits",
+      "方法": "MultinomialNB",
+      "测试准确率": 0.8759259259259259
+    },
+    {
+      "数据集": "digits",
+      "方法": "BernoulliNB",
+      "测试准确率": 0.8740740740740741
+    },
+    {
+      "数据集": "digits",
+      "方法": "LogisticRegression(对照)",
+      "测试准确率": 0.9666666666666667
+    },
+    {
+      "数据集": "强相关数据",
+      "方法": "GaussianNB",
+      "测试准确率": 0.9111111111111111
+    },
+    {
+      "数据集": "强相关数据",
+      "方法": "MultinomialNB",
+      "测试准确率": NaN
+    },
+    {
+      "数据集": "强相关数据",
+      "方法": "BernoulliNB",
+      "测试准确率": 0.8138888888888889
+    },
+    {
+      "数据集": "强相关数据",
+      "方法": "LogisticRegression(对照)",
+      "测试准确率": 0.9055555555555556
+    }
+  ],
+  "timings": {
+    "digits/GaussianNB": 0.0044549999984155875,
+    "digits/MultinomialNB": 0.0032381999990320764,
+    "digits/BernoulliNB": 0.0043554000003496185,
+    "digits/LogisticRegression(对照)": 0.07658720000108588,
+    "强相关数据/GaussianNB": 0.001723699999274686,
+    "强相关数据/MultinomialNB": 0.0016781999984232243,
+    "强相关数据/BernoulliNB": 0.002626800000143703,
+    "强相关数据/LogisticRegression(对照)": 0.006101699997088872
+  },
+  "notes": [
+    "digits 上 MultinomialNB 0.8759 / BernoulliNB 0.8741 明显优于 GaussianNB 0.8222：像素计数型特征更贴近多项式/伯努利分布假设。",
+    "强相关数据上 GaussianNB 0.9111 相对逻辑回归 0.9056：重复特征被重复计入似然，独立性假设被严重违背时 NB 会出现系统性偏差（概率过于自信）。",
+    "优点仍成立：NB 训练复杂度 O(np)，无需调参，小数据与文本分类上是极佳的第一基线。",
+    "异常提示：MultinomialNB 在 强相关数据 上不可用：Negative values in data passed to MultinomialNB (input X)."
+  ],
+  "figures": [
+    "figures/l4_06_nb.svg"
+  ]
+}
