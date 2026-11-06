@@ -4,7 +4,7 @@
 
 - **主入口**：[`../ai-algorithm-course.html`](../ai-algorithm-course.html) — 自包含单文件课程平台（4 模块 + 大纲页原有 7 标签），零外部依赖、可离线打开。
 - **本包导航**：[`index.html`](index.html) — 在 GitHub Pages 上浏览全部文件与预览图。
-- **一次性下载**：[`ai-algorithm-course.zip`](ai-algorithm-course.zip)。
+- **一次性下载**：[`ai-algorithm-course.zip`](https://neomakers.github.io/teaching-explainers/teaching-methods/ai-algorithm-course/ai-algorithm-course.zip)（ZIP 内不含 ZIP 自身，已解压时无需再下载）。
 
 ## 文件对照表
 
