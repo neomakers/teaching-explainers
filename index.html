@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教学原理讲解页 · Teaching Explainers</title>
+<style>
+  :root{--bg:#f6f8fb;--ink:#1c2733;--ink2:#4a5a6b;--line:#e2e8f0;--navy:#17365c;--blue:#2563eb;--soft:#eaf1ff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  header{background:linear-gradient(120deg,#17365c 0%,#24518a 100%);color:#fff;padding:40px 24px 34px}
+  .k{font-size:12px;letter-spacing:.18em;color:#b8d2f5;font-weight:600;text-transform:uppercase}
+  header h1{font-size:29px;margin:10px 0 6px}
+  header p{margin:0;color:#d5e4f8;max-width:760px}
+  main{max-width:900px;margin:0 auto;padding:32px 24px 70px}
+  h2{font-size:17px;color:var(--navy);margin:0 0 14px}
+  .card{display:block;background:#fff;border:1px solid var(--line);border-radius:11px;padding:20px 22px;margin-bottom:14px;text-decoration:none;color:inherit;transition:.15s}
+  .card:hover{border-color:var(--blue);box-shadow:0 3px 14px rgba(37,99,235,.10);transform:translateY(-1px)}
+  .card .cat{font-size:11.5px;letter-spacing:.08em;color:var(--blue);background:var(--soft);padding:2px 9px;border-radius:20px;font-weight:600}
+  .card h3{font-size:19px;color:var(--navy);margin:10px 0 6px}
+  .card p{color:var(--ink2);font-size:14px;margin:0 0 12px}
+  .card .meta{font-size:12.5px;color:#78899b;border-top:1px solid var(--line);padding-top:10px}
+  .note{background:#fff;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:0 9px 9px 0;padding:14px 18px;margin-top:26px;font-size:13.5px;color:var(--ink2)}
+  .note b{color:var(--navy)}
+  footer{border-top:1px solid var(--line);text-align:center;padding:20px;color:#78899b;font-size:12.5px}
+  code{font-family:Consolas,Menlo,monospace;font-size:.9em;background:#f3f6fa;border:1px solid var(--line);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <div class="k">Teaching Explainers</div>
+  <h1>教学原理讲解页</h1>
+  <p>面向智能制造、机器人、计算机视觉与 AI 教学的交互式原理讲解合集。每篇均为单文件 HTML，零外部依赖，可离线打开，含可操作演示。</p>
+</header>
+<main>
+  <h2>已收录讲解</h2>
+
+  <a class="card" href="computer-vision/aruco-marker-principles.html">
+    <span class="cat">计算机视觉 / Computer Vision</span>
+    <h3>ArUco 码基本原理</h3>
+    <p>一个黑白方格图案如何同时回答「我是谁」和「我在哪里」：从二进制编码与汉明纠错，到自适应阈值检测、单应透视归一化和 PnP 六自由度位姿解算。含 4 组交互演示与可直接运行的 OpenCV 代码。</p>
+    <div class="meta">单文件 HTML · 4 组交互 · 依据 OpenCV 4.x 官方文档 · 更新于 2026-11-06</div>
+  </a>
+
+  <div class="note">
+    <b>归档约定</b>：按主题分目录（<code>computer-vision/</code>、<code>robotics/</code>、<code>additive-manufacturing/</code>、<code>ai-deployment/</code>）。新增讲解页时同步更新仓库 README 的索引表与本页卡片。<br>
+    <b>说明</b>：页内演示字典为教学用简化模型，非 OpenCV 预定义字典；演示用于说明机理，不作检测率或测量精度依据。
+  </div>
+</main>
+<footer>neomakers / teaching-explainers · 单文件离线页面合集</footer>
+</body>
+</html>

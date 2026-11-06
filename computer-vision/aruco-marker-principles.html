@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArUco 码基本原理 · 交互式讲解</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-soft:#f6f8fb;
+    --bg-code:#f3f6fa;
+    --ink:#1c2733;
+    --ink-2:#4a5a6b;
+    --ink-3:#78899b;
+    --line:#e2e8f0;
+    --line-2:#cfd8e3;
+    --blue:#2563eb;
+    --blue-soft:#eaf1ff;
+    --navy:#17365c;
+    --orange:#d2611c;
+    --orange-soft:#fff2e8;
+    --green:#1b7f5c;
+    --green-soft:#e7f6ef;
+    --red:#c0392b;
+    --red-soft:#fdecea;
+    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---------- 布局 ---------- */
+  .topbar{background:linear-gradient(120deg,#17365c 0%,#24518a 100%);color:#fff;padding:34px 0 30px}
+  .topbar .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#b8d2f5;font-weight:600}
+  h1{font-size:31px;line-height:1.3;margin:10px 0 8px;letter-spacing:.01em}
+  .subtitle{color:#d5e4f8;font-size:15px;margin:0;max-width:820px}
+  .meta{margin-top:16px;font-size:12.5px;color:#a9c5e9;display:flex;gap:18px;flex-wrap:wrap}
+
+  .shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:216px minmax(0,1fr);gap:44px}
+  nav.toc{position:sticky;top:0;align-self:start;padding:30px 0 40px;max-height:100vh;overflow:auto}
+  nav.toc .label{font-size:11px;letter-spacing:.16em;color:var(--ink-3);font-weight:700;margin-bottom:12px;text-transform:uppercase}
+  nav.toc a{display:block;padding:6px 10px;margin:1px 0;border-left:2px solid transparent;color:var(--ink-2);font-size:13.5px;border-radius:0 5px 5px 0}
+  nav.toc a:hover{background:var(--bg-soft);color:var(--blue);text-decoration:none}
+  nav.toc a.active{border-left-color:var(--blue);color:var(--blue);background:var(--blue-soft);font-weight:600}
+  main{padding:30px 0 90px;min-width:0}
+
+  section{scroll-margin-top:22px;margin-bottom:52px}
+  h2{font-size:22px;margin:0 0 6px;color:var(--navy);letter-spacing:.01em;display:flex;align-items:baseline;gap:11px}
+  h2 .num{font-family:var(--mono);font-size:13px;color:var(--blue);background:var(--blue-soft);padding:3px 8px;border-radius:5px;font-weight:600}
+  h3{font-size:16.5px;margin:26px 0 8px;color:var(--navy)}
+  h4{font-size:14.5px;margin:18px 0 6px;color:var(--ink)}
+  p{margin:10px 0}
+  .lead{color:var(--ink-2);font-size:15px;margin:8px 0 18px}
+  .sec-line{height:1px;background:var(--line);margin:14px 0 20px}
+  strong{color:var(--navy)}
+  code{font-family:var(--mono);font-size:.9em;background:var(--bg-code);border:1px solid var(--line);padding:1px 5px;border-radius:4px;color:#17365c}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:5px 0}
+
+  /* ---------- 组件 ---------- */
+  .card{background:var(--bg-soft);border:1px solid var(--line);border-radius:11px;padding:18px 20px;margin:16px 0}
+  .card.white{background:#fff}
+  .callout{border-left:3px solid var(--blue);background:var(--blue-soft);padding:13px 17px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14.5px}
+  .callout.warn{border-left-color:var(--orange);background:var(--orange-soft)}
+  .callout.key{border-left-color:var(--navy);background:#eef3f9}
+  .callout .tag{font-weight:700;font-size:12px;letter-spacing:.06em;display:block;margin-bottom:3px;color:var(--navy)}
+  .callout.warn .tag{color:var(--orange)}
+
+  .formula{font-family:var(--mono);background:#fff;border:1px solid var(--line-2);border-radius:8px;padding:15px 18px;margin:14px 0;font-size:14.5px;color:var(--navy);overflow-x:auto;white-space:nowrap;text-align:center}
+  .formula .cm{color:var(--ink-3);font-family:var(--sans);font-size:12.5px}
+
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--bg-soft);color:var(--navy);font-weight:600;font-size:13.5px}
+  td code{font-size:12.5px;white-space:nowrap}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:16px 0}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+  .tile{background:#fff;border:1px solid var(--line);border-radius:9px;padding:15px 16px}
+  .tile .t{font-weight:700;color:var(--navy);font-size:14.5px;margin-bottom:5px}
+  .tile .d{font-size:13.5px;color:var(--ink-2);line-height:1.65}
+
+  .pill{display:inline-block;font-size:11.5px;font-family:var(--mono);padding:2px 7px;border-radius:20px;background:var(--bg-code);border:1px solid var(--line);color:var(--ink-2);margin-right:5px}
+  .pill.ok{background:var(--green-soft);border-color:#bfe4d2;color:var(--green)}
+  .pill.bad{background:var(--red-soft);border-color:#f3c6c1;color:var(--red)}
+  .pill.warn{background:var(--orange-soft);border-color:#f5d3ba;color:var(--orange)}
+
+  .demo{border:1px solid var(--line-2);border-radius:11px;overflow:hidden;margin:18px 0;background:#fff}
+  .demo-head{background:var(--bg-soft);border-bottom:1px solid var(--line);padding:10px 16px;font-size:13px;color:var(--ink-2);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .demo-head b{color:var(--navy)}
+  .demo-body{padding:18px}
+  .controls{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .ctrl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)}
+  .ctrl input[type=range]{width:130px;accent-color:var(--blue)}
+  .ctrl output{font-family:var(--mono);font-size:12.5px;color:var(--navy);min-width:44px;text-align:right}
+  button{font-family:inherit;font-size:13px;cursor:pointer;background:#fff;color:var(--navy);border:1px solid var(--line-2);border-radius:6px;padding:5px 12px;transition:.15s}
+  button:hover{background:var(--blue-soft);border-color:var(--blue);color:var(--blue)}
+  button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  button.ghost{border-color:transparent;background:transparent;color:var(--blue)}
+  .seg{display:inline-flex;border:1px solid var(--line-2);border-radius:7px;overflow:hidden}
+  .seg button{border:0;border-radius:0;border-right:1px solid var(--line-2);padding:5px 12px}
+  .seg button:last-child{border-right:0}
+  .seg button.on{background:var(--blue);color:#fff}
+
+  .figrow{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .fig{flex:1 1 210px;min-width:190px;text-align:center}
+  .fig .cap{font-size:12.5px;color:var(--ink-2);margin-top:7px;line-height:1.5}
+  .fig .cap b{color:var(--navy)}
+  .canvas-wrap{position:relative;display:inline-block;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#eef1f5;line-height:0}
+  .canvas-wrap canvas{display:block;max-width:100%;height:auto}
+  .canvas-wrap canvas.overlay{position:absolute;left:0;top:0;pointer-events:none}
+
+  .marker-svg{display:block;margin:0 auto;max-width:100%;height:auto}
+  .marker-svg rect.cell{cursor:pointer}
+  .marker-svg rect.cell:hover{stroke:var(--blue);stroke-width:2}
+  .bits{font-family:var(--mono);font-size:12.5px;line-height:1.6;white-space:pre;background:var(--bg-code);border:1px solid var(--line);border-radius:7px;padding:10px 13px;overflow-x:auto;color:var(--navy)}
+  .stat{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0}
+  .stat div{background:#fff;border:1px solid var(--line);border-radius:7px;padding:8px 12px;font-size:12.5px;color:var(--ink-2)}
+  .stat div b{display:block;font-family:var(--mono);font-size:17px;color:var(--navy);line-height:1.4}
+  .stat div.good b{color:var(--green)}
+  .stat div.bad b{color:var(--red)}
+
+  /* 流水线 */
+  .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin:16px 0}
+  .step{background:#fff;border:1px solid var(--line);border-radius:9px;padding:12px 13px;cursor:pointer;transition:.15s;position:relative}
+  .step:hover{border-color:var(--blue);box-shadow:0 2px 10px rgba(37,99,235,.09)}
+  .step.on{border-color:var(--blue);background:var(--blue-soft)}
+  .step .n{font-family:var(--mono);font-size:11px;color:var(--blue);font-weight:700}
+  .step .t{font-weight:650;font-size:13.5px;color:var(--navy);margin:2px 0 3px}
+  .step .s{font-size:12px;color:var(--ink-3);line-height:1.5}
+  .step-detail{background:#fff;border:1px solid var(--line-2);border-left:3px solid var(--blue);border-radius:0 9px 9px 0;padding:14px 18px;margin:0 0 14px;font-size:14px;min-height:78px}
+  .step-detail h4{margin:0 0 6px;color:var(--navy);font-size:15px}
+  .step-detail p{margin:5px 0;color:var(--ink-2)}
+  .step-detail .param{font-family:var(--mono);font-size:12px;color:var(--orange);background:var(--orange-soft);padding:1px 5px;border-radius:3px}
+
+  pre{background:var(--bg-code);border:1px solid var(--line);border-radius:9px;padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.7;color:var(--ink);margin:12px 0}
+  pre .k{color:#8b2f97;font-weight:600}
+  pre .s{color:#1b7f5c}
+  pre .c{color:#8a97a6;font-style:italic}
+  pre .f{color:#2563eb}
+  pre .n{color:#b3560d}
+  .code-head{display:flex;justify-content:space-between;align-items:center;background:var(--bg-soft);border:1px solid var(--line);border-bottom:0;border-radius:9px 9px 0 0;padding:8px 14px;font-size:12.5px;color:var(--ink-2)}
+  .code-head + pre{border-radius:0 0 9px 9px;margin-top:0}
+
+  .checklist{list-style:none;padding:0;margin:12px 0}
+  .checklist li{background:#fff;border:1px solid var(--line);border-radius:7px;padding:9px 13px;margin:7px 0;font-size:14px;display:flex;gap:11px;align-items:flex-start}
+  .checklist li .ic{flex:0 0 auto;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-soft);border-radius:4px;padding:2px 6px;margin-top:2px}
+  .checklist li.warn .ic{color:var(--orange);background:var(--orange-soft)}
+
+  .refs{font-size:13px;color:var(--ink-2)}
+  .refs li{margin:6px 0}
+  footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);font-size:12.5px;text-align:center}
+
+  @media(max-width:900px){
+    .shell{grid-template-columns:1fr;gap:0}
+    nav.toc{position:static;max-height:none;padding:18px 0 6px;border-bottom:1px solid var(--line);margin-bottom:18px}
+    nav.toc a{display:inline-block;border-left:0;border-bottom:2px solid transparent;padding:4px 9px}
+    nav.toc a.active{border-left:0;border-bottom-color:var(--blue)}
+    .grid2,.grid3{grid-template-columns:1fr}
+    h1{font-size:25px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="kicker">Computer Vision / Fiducial Marker</div>
+    <h1>ArUco 码的基本原理</h1>
+    <p class="subtitle">一个黑白方格图案，如何同时解决「我是谁」和「我在哪里」——从二进制编码、汉明距离，到单应变换与 PnP 位姿解算的完整链路。</p>
+    <div class="meta">
+      <span>面向：机器人视觉 / 智能制造教学</span>
+      <span>依据：OpenCV 4.x 官方文档</span>
+      <span>单文件 · 可离线 · 含 4 组交互演示</span>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+  <nav class="toc" id="toc">
+    <div class="label">目录</div>
+    <a href="#s0">0 · 一句话讲清</a>
+    <a href="#s1">1 · 结构解剖</a>
+    <a href="#s2">2 · 编码与字典</a>
+    <a href="#s3">3 · 检测流水线</a>
+    <a href="#s4">4 · 全链路交互演示</a>
+    <a href="#s5">5 · 从 2D 到 6DoF</a>
+    <a href="#s6">6 · 可直接运行的代码</a>
+    <a href="#s7">7 · 误差来源与工程清单</a>
+    <a href="#s8">8 · 典型应用</a>
+    <a href="#s9">9 · 术语与参考</a>
+  </nav>
+
+  <main>
+
+  <!-- ============ 0 ============ -->
+  <section id="s0">
+    <h2><span class="num">00</span>一句话讲清</h2>
+    <div class="callout key">
+      <span class="tag">核心结论</span>
+      ArUco 是<strong>人工设计的、带黑色边框的二进制方阵</strong>。黑边让算法能在图像里快速找到「疑似正方形」；内部 <em>n×n</em> 黑白格是<strong>编码</strong>，查字典得到唯一 ID；找到的<strong>四个角点</strong>作为 2D–3D 对应点，配合相机内参用 <code>solvePnP</code> 解出平移与旋转。<br>
+      因此<strong>单个标记就足以求出完整的 6 自由度位姿</strong>——这是它比二维码更适合机器人定位的根本原因。
+    </div>
+    <div class="grid3">
+      <div class="tile"><div class="t">① 编码 → 身份</div><div class="d">内部矩阵是一个码字。字典里任意两个码字保持足够大的汉明距离，因此少量位翻转仍能被纠正，且 ID 不是二进制转十进制，而是字典中的索引。</div></div>
+      <div class="tile"><div class="t">② 几何 → 位置</div><div class="d">四个角点提供 4 组对应关系。已知真实边长与相机内参，即可解出 marker 相对相机的旋转向量与平移向量。</div></div>
+      <div class="tile"><div class="t">③ 关键代价</div><div class="d">必须提前标定相机、必须知道打印后的实际边长、必须保证黑边完整可见。三者任一失准，位姿结果系统性偏差。</div></div>
+    </div>
+    <div class="formula">
+      s · [ u, v, 1 ]<sup>T</sup> = K · [ R | t ] · [ X, Y, Z, 1 ]<sup>T</sup>
+      <div class="cm">左边是图像像素，中间是相机内参与待求位姿，右边是 marker 上已知的三维点</div>
+    </div>
+    <p class="lead">下面按「长什么样 → 怎么编码 → 怎么找到 → 怎么算位姿」四步拆开。所有演示均为纯前端计算，可拖动、点击、实时观察。</p>
+  </section>
+
+  <!-- ============ 1 ============ -->
+  <section id="s1">
+    <h2><span class="num">01</span>结构解剖：一张图看懂</h2>
+    <div class="sec-line"></div>
+    <p>一个 ArUco 标记由两部分组成：<strong>宽黑色边框</strong>（默认宽度为 1 个 bit，<code>markerBorderBits=1</code>）和<strong>内部 n×n 二进制矩阵</strong>。所以一个 5×5 的标记，在图像上实际是 <strong>(5+2×1) = 7×7</strong> 个等宽格子。</p>
+
+    <div class="demo">
+      <div class="demo-head"><span><b>交互 1</b> · 切换矩阵规模 / 点击任意格子翻转黑白</span><span id="struct-info">5×5 数据 + 1 圈黑边 = 7×7</span></div>
+      <div class="demo-body">
+        <div class="controls">
+          <div class="seg" id="size-seg">
+            <button data-n="4">4×4</button>
+            <button data-n="5" class="on">5×5</button>
+            <button data-n="6">6×6</button>
+            <button data-n="7">7×7</button>
+          </div>
+          <button id="struct-reset">重置图案</button>
+          <span style="font-size:12.5px;color:var(--ink-3)">图例：<span style="color:var(--red)">■</span> 左上角（角点顺序起点）　<span style="color:var(--blue)">▢</span> 数据区</span>
+        </div>
+        <div class="figrow">
+          <div class="fig" style="flex:0 1 330px">
+            <div id="struct-svg"></div>
+            <div class="cap"><b>图案结构</b>：外圈恒为黑，内部每格 1 bit</div>
+          </div>
+          <div class="fig" style="flex:1 1 320px;text-align:left">
+            <h4 style="margin-top:0">三个必须记住的约定</h4>
+            <ul style="font-size:14px;color:var(--ink-2);padding-left:19px">
+              <li><strong>黑边只负责「被找到」</strong>：连续、封闭、高对比的黑色轮廓，在自适应阈值化后极易形成凸四边形轮廓。</li>
+              <li><strong>内部矩阵只负责「是谁」和「朝向」</strong>：码字本身要能区分 0°/90°/180°/270° 四种旋转，从而唯一确定四个角点的顺序。</li>
+              <li><strong>角点顺序固定</strong>：从左上角起顺时针 —— TL → TR → BR → BL。位姿解算依赖这个顺序与三维点一一对应。</li>
+            </ul>
+            <div class="bits" id="struct-bits"></div>
+            <div class="cap" style="text-align:left;margin-top:6px">上方为当前内部矩阵的 0/1（黑=1，白=0）。此图案为教学示意，非 OpenCV 预定义字典码字。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="tag">易混淆点</span>
+      <strong>ID ≠ 二进制转十进制。</strong> 6×6 有 36 bit，若按二进制换算数值过大且不实用；OpenCV 把 ID 定义为「该码字在字典中的序号」。例如 <code>DICT_6X6_250</code> 的合法 ID 只有 0–249，ID 23 就是字典表里第 24 个码字，与它的 0/1 数值无关。<strong>换字典，同一个图案的 ID 会变，甚至根本不是合法标记。</strong>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section id="s2">
+    <h2><span class="num">02</span>编码与字典：为什么抗干扰</h2>
+    <div class="sec-line"></div>
+    <p>字典（dictionary）就是一张<strong>预定义的码字表</strong>。设计目标是让任意两个码字之间的<strong>最小汉明距离</strong>（inter-marker distance）尽可能大。距离越大，容错能力越强。纠错的基本判据：</p>
+    <div class="formula">
+      最小码距 d<sub>min</sub> → 可检测 d<sub>min</sub> − 1 位错，可纠正 ⌊(d<sub>min</sub> − 1)/2⌋ 位错
+      <div class="cm">例如 d_min = 4：能发现 3 位错，能唯一纠正 1 位错</div>
+    </div>
+    <p>OpenCV 预定义字典的规格（数字来自官方文档，非估计值）：</p>
+    <table>
+      <thead><tr><th>字典族</th><th>位数</th><th>50 个码字 / d<sub>min</sub></th><th>100 / d<sub>min</sub></th><th>250 / d<sub>min</sub></th><th>1000 / d<sub>min</sub></th></tr></thead>
+      <tbody>
+        <tr><td><code>DICT_4X4_*</code></td><td>4×4 = 16 bit</td><td>4</td><td>3</td><td>3</td><td>2</td></tr>
+        <tr><td><code>DICT_5X5_*</code></td><td>5×5 = 25 bit</td><td>8</td><td>7</td><td>6</td><td>5</td></tr>
+        <tr><td><code>DICT_6X6_*</code></td><td>6×6 = 36 bit</td><td>13</td><td>12</td><td>11</td><td>10</td></tr>
+        <tr><td><code>DICT_7X7_*</code></td><td>7×7 = 49 bit</td><td>18</td><td>17</td><td>16</td><td>15</td></tr>
+        <tr><td><code>DICT_ARUCO_ORIGINAL</code></td><td>5×5 = 25 bit</td><td colspan="4">1024 个码字，最小距离 0（老式字典，无纠错保障，不建议新项目使用）</td></tr>
+      </tbody>
+    </table>
+    <p class="lead">规律很清晰：<strong>位数越多、字典越小 → 码距越大 → 越鲁棒</strong>；但位数多意味着要在更小的图像区域里分辨更多格子，检测更难。工程上的取舍原则是：<strong>选能满足 ID 数量需求的最小字典</strong>。只需要 30 个标记时，<code>DICT_6X6_50</code> 明显优于 <code>DICT_6X6_1000</code>。</p>
+
+    <div class="demo">
+      <div class="demo-head"><span><b>交互 2</b> · 汉明距离与纠错：点击格子人为制造误码</span><span id="dict-info">教学用演示字典</span></div>
+      <div class="demo-body">
+        <div class="controls">
+          <span class="ctrl">目标码字 ID</span>
+          <div class="seg" id="id-seg"></div>
+          <button id="flip-reset">清除误码</button>
+          <button id="flip-random">随机翻转 1 位</button>
+          <button id="flip-random3">随机翻转 3 位</button>
+        </div>
+        <div class="figrow">
+          <div class="fig" style="flex:0 1 300px">
+            <div id="ham-svg"></div>
+            <div class="cap">读出的码字（<b>红框 = 被翻转的位</b>）</div>
+          </div>
+          <div class="fig" style="flex:1 1 340px;text-align:left">
+            <div class="stat">
+              <div id="st-flips"><b>0</b>翻转位数</div>
+              <div id="st-near"><b>0</b>最近码字距离</div>
+              <div id="st-id" class="good"><b>2</b>识别结果 ID</div>
+            </div>
+            <div id="ham-verdict" class="callout" style="margin:14px 0 8px"></div>
+            <h4 style="margin:14px 0 4px">字典中各码字到读出码字的距离</h4>
+            <div id="ham-bars" style="font-size:12.5px"></div>
+            <p style="font-size:13px;color:var(--ink-3);margin-top:10px">演示字典由固定种子随机生成，生成约束为两两汉明距离 ≥ 4（本例实测 8），用于说明匹配算法；它不是 OpenCV 预定义字典。真实字典的码字表还额外排除了「某个码字的旋转版本与另一个码字过近」的情况。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>识别时实际做了什么</h3>
+    <ol style="font-size:14.5px;color:var(--ink-2)">
+      <li>把读出的 <em>n×n</em> 位与字典中每个码字逐一比较，取<strong>汉明距离最小者</strong>；</li>
+      <li>若距离 ≤ 允许纠错位数，接受该 ID；否则判定为「不是本字典的标记」，丢弃候选；</li>
+      <li>用码字的 4 个旋转版本试探，确定原始朝向，据此把四个角点重排为 TL/TR/BR/BL；</li>
+      <li>检查黑边是否为全黑（<code>maxErroneousBitsInBorderRate</code>，默认 0.35），排除误检。</li>
+    </ol>
+    <div class="callout warn">
+      <span class="tag">边界</span>
+      OpenCV 用 <code>errorCorrectionRate</code>（默认 <strong>0.6</strong>）主动<strong>压低</strong>字典的理论纠错上限：若字典理论上能纠 6 位，实际只按 6×0.6 = 3 位执行。原因是纠错越激进，把「噪声方块」误认成合法标记的<strong>假阳性</strong>越多。定位类应用宁可漏检，也不能接受错误位姿。
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section id="s3">
+    <h2><span class="num">03</span>检测流水线：相机如何找到它</h2>
+    <div class="sec-line"></div>
+    <p>OpenCV 把检测明确分成两大阶段：<strong>候选检测</strong>（找出可能是标记的方形）与<strong>候选识别</strong>（读编码、确认身份）。点击下方任一步骤查看细节与对应参数。</p>
+
+    <div class="flow" id="flow"></div>
+    <div class="step-detail" id="flow-detail"></div>
+
+    <div class="callout">
+      <span class="tag">为什么用自适应阈值，而不是固定阈值</span>
+      现场光照常呈梯度分布（一侧靠窗、一侧背光），固定阈值会把亮侧的黑格判成白。自适应阈值按局部窗口计算阈值，OpenCV 默认在窗口尺寸 <code>3 → 23</code>（步长 10）上跑多轮，即 3/13/23 三个尺度，每轮都提取一次候选，最后合并。窗口过小会「切断」黑边，过大则退化为全局阈值并拖慢速度。
+    </div>
+    <div class="callout">
+      <span class="tag">透视归一化中的两个细节</span>
+      校正后的图像被切成 (n + 2×border) × (n + 2×border) 个 cell（默认每 cell 4 像素，<code>perspectiveRemovePixelPerCell=4</code>）。统计每个 cell 的黑白像素多数时，<strong>会忽略 cell 边缘 13% 的边距</strong>（<code>perspectiveRemoveIgnoredMarginPerCell=0.13</code>），因为重采样会让相邻格子颜色互相渗入边缘。这正是本节第 5 步与下一节演示所复现的逻辑。
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section id="s4">
+    <h2><span class="num">04</span>全链路交互演示：从三维投影到读出 ID</h2>
+    <div class="sec-line"></div>
+    <p>这一节把前面所有环节串成一条真实可计算的链路。左侧是<strong>物理上正确的透视投影</strong>（marker 平面绕 X/Y 轴旋转后按针孔模型成像），中间是算法做的<strong>逆透视归一化</strong>（等价于 <code>warpPerspective</code>），右侧是逐格采样后读回的 bit。</p>
+
+    <div class="demo">
+      <div class="demo-head"><span><b>交互 3</b> · 拖动滑块改变姿态与成像大小</span><span>单应矩阵由 4 对点实时求解 · 全部在浏览器内完成</span></div>
+      <div class="demo-body">
+        <div class="controls">
+          <label class="ctrl">俯仰 θx <input type="range" id="rx" min="-50" max="50" value="22"><output id="rx-o">22°</output></label>
+          <label class="ctrl">偏转 θy <input type="range" id="ry" min="-50" max="50" value="-28"><output id="ry-o">-28°</output></label>
+          <label class="ctrl">成像尺寸 <input type="range" id="sz" min="55" max="100" value="86"><output id="sz-o">86%</output></label>
+          <button id="cam-reset">恢复默认</button>
+        </div>
+        <div class="figrow">
+          <div class="fig">
+            <div class="canvas-wrap" style="width:300px;height:300px">
+              <canvas id="cam-cv" width="360" height="360" style="width:300px;height:300px"></canvas>
+              <canvas id="cam-ov" class="overlay" width="360" height="360" style="width:300px;height:300px"></canvas>
+            </div>
+            <div class="cap"><b>① 相机看到的图像</b><br>marker 平面经旋转 + 针孔投影形成的四边形</div>
+          </div>
+          <div class="fig">
+            <div class="canvas-wrap" style="width:210px;height:210px">
+              <canvas id="rect-cv" width="210" height="210" style="width:210px;height:210px"></canvas>
+            </div>
+            <div class="cap"><b>② 逆透视归一化</b><br>四个角点拉回正方形，7×7 网格复位</div>
+          </div>
+          <div class="fig" style="flex:1 1 230px;min-width:210px">
+            <div id="sample-grid" style="max-width:215px;margin:0 auto"></div>
+            <div class="cap"><b>③ 逐格多数投票</b><br>忽略 13% 边缘后读出 5×5 bit</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div id="pj-dist"><b>0</b>与原始码字的汉明距离</div>
+          <div id="pj-rot"><b>0</b>四个角点像素跨度 (px)</div>
+          <div id="pj-verdict" class="good"><b>成功</b>识别判定</div>
+        </div>
+        <div id="pj-note" class="callout" style="margin:14px 0 0"></div>
+      </div>
+    </div>
+
+    <h3>这一步的数学</h3>
+    <p>四对对应点（正方形 ↔ 图像四边形）可以确定一个 <strong>3×3 单应矩阵 H</strong>（8 个自由度，每对点提供 2 个方程）：</p>
+    <div class="formula">
+      [ x′, y′, w′ ]<sup>T</sup> = H · [ x, y, 1 ]<sup>T</sup> ，取 u = x′/w′， v = y′/w′
+      <div class="cm">本页用高斯消元直接解 8 元线性方程组求 H，再逐像素做逆映射 + 最近邻采样</div>
+    </div>
+    <p class="lead">注意方向：成像（正方形 → 四边形）用 H，算法校正（四边形 → 正方形）用 H 的逆。演示中两步用的是同一个求解器，只是把点的输入顺序对调。</p>
+    <div class="callout warn">
+      <span class="tag">可以亲手验证的现象</span>
+      把「成像尺寸」拉到最小、同时把倾角拉到最大，读回的 bit 开始出错 —— 每个格子在图像里只剩几个像素，抗锯齿与重采样误差压过了黑白差异。这就是工程上<strong>「标记在图像中至少要有几十像素边长」</strong>这条经验规则的来源。演示使用最近邻采样且不含运动模糊，真实相机的退化会更早出现。
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section id="s5">
+    <h2><span class="num">05</span>从 2D 到 6DoF：PnP 位姿解算</h2>
+    <div class="sec-line"></div>
+    <p>检测到四个角点后，剩下的就是经典的 <strong>Perspective-n-Point</strong> 问题：已知若干三维点及其二维投影，求相机与物体之间的刚体变换。ArUco 的优势在于<strong>一个标记恰好提供 4 个共面但不共线的精确对应点</strong>，这是 PnP 有唯一解的最小充分条件。</p>
+
+    <div class="grid2">
+      <div class="card white">
+        <h4 style="margin-top:0">已知量（必须提前测准）</h4>
+        <table style="margin:6px 0">
+          <tr><th>量</th><th>来源</th></tr>
+          <tr><td>4 个角点的图像坐标 <code>(u,v)</code></td><td><code>detectMarkers()</code> 输出</td></tr>
+          <tr><td>相机内参 <code>K</code>（f<sub>x</sub>, f<sub>y</sub>, c<sub>x</sub>, c<sub>y</sub>）</td><td>相机标定</td></tr>
+          <tr><td>畸变系数 <code>dist</code></td><td>相机标定</td></tr>
+          <tr><td>marker 的<strong>实际物理边长</strong> L</td><td>打印后实测</td></tr>
+          <tr><td>4 个角点的物体坐标</td><td>由 L 构造：(±L/2, ±L/2, 0)</td></tr>
+        </table>
+      </div>
+      <div class="card white">
+        <h4 style="margin-top:0">待求量（6 个自由度）</h4>
+        <table style="margin:6px 0">
+          <tr><th>量</th><th>含义</th></tr>
+          <tr><td><code>rvec</code> (3)</td><td>旋转向量，方向为转轴、模为转角；可用 <code>Rodrigues()</code> 转 3×3 旋转矩阵</td></tr>
+          <tr><td><code>tvec</code> (3)</td><td>平移向量，marker 原点在相机坐标系中的位置</td></tr>
+        </table>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-bottom:0"><strong>单位约定</strong>：<code>tvec</code> 的单位与传入的边长 L 一致。L 用米，距离就是米；用毫米，距离就是毫米。这是最常见的量纲错误来源。</p>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-head"><span><b>图 1</b> · marker 坐标系与相机坐标系</span><span>marker 原点在其中心，Z 轴指向标记正面外侧</span></div>
+      <div class="demo-body" style="padding:10px">
+        <svg viewBox="0 0 660 250" style="width:100%;height:auto;display:block" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L8,3 z" fill="#2563eb"/>
+            </marker>
+            <marker id="ag" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L8,3 z" fill="#1b7f5c"/>
+            </marker>
+            <marker id="ao" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L8,3 z" fill="#d2611c"/>
+            </marker>
+          </defs>
+          <rect x="0" y="0" width="660" height="250" fill="#ffffff"/>
+
+          <!-- 相机 -->
+          <g>
+            <rect x="42" y="96" width="46" height="34" rx="5" fill="#eaf1ff" stroke="#2563eb" stroke-width="1.6"/>
+            <path d="M88 102 L106 92 L106 134 L88 124 Z" fill="#dbe8ff" stroke="#2563eb" stroke-width="1.6"/>
+            <circle cx="65" cy="113" r="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.6"/>
+            <text x="42" y="151" font-size="12.5" fill="#17365c" font-family="sans-serif">相机光心 O</text>
+            <line x1="65" y1="113" x2="133" y2="113" stroke="#2563eb" stroke-width="1.4" stroke-dasharray="4 3"/>
+            <text x="110" y="107" font-size="11.5" fill="#2563eb" font-family="sans-serif">光轴 Z</text>
+          </g>
+
+          <!-- 像平面 -->
+          <rect x="150" y="52" width="8" height="146" fill="#e2e8f0" stroke="#cfd8e3"/>
+          <text x="140" y="215" font-size="12" fill="#78899b" font-family="sans-serif">像平面</text>
+          <circle cx="158" cy="80" r="3.2" fill="#c0392b"/>
+          <circle cx="158" cy="146" r="3.2" fill="#c0392b"/>
+
+          <!-- 光线 -->
+          <path d="M65 113 L420 62 M65 113 L420 176 M65 113 L530 92 M65 113 L530 194" stroke="#9fb4cd" stroke-width="1" fill="none" stroke-dasharray="5 4"/>
+
+          <!-- marker 平面（透视四边形） -->
+          <path d="M420 62 L530 92 L530 194 L420 176 Z" fill="#f4f7fb" stroke="#17365c" stroke-width="2"/>
+          <!-- 内部格子示意 -->
+          <path d="M447 69 L447 181 M475 76 L475 186 M502 83 L502 189" stroke="#cfd8e3" stroke-width="1"/>
+          <path d="M420 90 L530 118 M420 118 L530 143 M420 147 L530 169" stroke="#cfd8e3" stroke-width="1"/>
+          <circle cx="420" cy="62" r="5" fill="#c0392b"/>
+          <circle cx="530" cy="92" r="4" fill="#2563eb"/>
+          <circle cx="530" cy="194" r="4" fill="#1b7f5c"/>
+          <circle cx="420" cy="176" r="4" fill="#d2611c"/>
+          <text x="408" y="54" font-size="12" fill="#c0392b" font-family="monospace">TL</text>
+          <text x="536" y="90" font-size="12" fill="#2563eb" font-family="monospace">TR</text>
+          <text x="536" y="203" font-size="12" fill="#1b7f5c" font-family="monospace">BR</text>
+          <text x="404" y="190" font-size="12" fill="#d2611c" font-family="monospace">BL</text>
+
+          <!-- marker 局部坐标轴 -->
+          <line x1="475" y1="132" x2="556" y2="132" stroke="#2563eb" stroke-width="2" marker-end="url(#ar)"/>
+          <line x1="475" y1="132" x2="475" y2="216" stroke="#1b7f5c" stroke-width="2" marker-end="url(#ag)"/>
+          <line x1="475" y1="132" x2="438" y2="102" stroke="#d2611c" stroke-width="2" marker-end="url(#ao)"/>
+          <text x="560" y="136" font-size="12.5" fill="#2563eb" font-family="monospace">X</text>
+          <text x="470" y="231" font-size="12.5" fill="#1b7f5c" font-family="monospace">Y</text>
+          <text x="427" y="99" font-size="12.5" fill="#d2611c" font-family="monospace">Z</text>
+
+          <!-- tvec 标注 -->
+          <path d="M65 113 Q250 175 469 132" stroke="#17365c" stroke-width="1.6" fill="none" stroke-dasharray="7 4" marker-end="url(#ar)"/>
+          <text x="238" y="188" font-size="12.5" fill="#17365c" font-family="sans-serif">tvec：光心 → marker 中心</text>
+          <text x="238" y="205" font-size="11.5" fill="#78899b" font-family="sans-serif">rvec：marker 坐标系相对相机的旋转</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="formula">
+      s[u v 1]<sup>T</sup> = K [ r<sub>1</sub> r<sub>2</sub> t ] [ X Y 1 ]<sup>T</sup>　<span class="cm">（共面点 Z=0，故旋转矩阵第三列不出现）</span>
+      <div class="cm">4 组对应 → 8 个方程 → 解 H 的列向量 → 结合 K<sup>−1</sup> 恢复 R 与 t</div>
+    </div>
+    <p>工程上不必自己实现：调用 <code>cv2.solvePnP(obj_pts, img_pts, K, dist)</code> 即可。<code>cv2.aruco.estimatePoseSingleMarkers()</code> 本质上是对每个标记自动构造 <code>obj_pts</code> 并批量调用同一求解器。</p>
+
+    <div class="callout warn">
+      <span class="tag">三个固有局限</span>
+      <strong>① 平面标记存在位姿歧义</strong>：正对时姿态稳定，接近掠射角时 rvec 会明显抖动（深度信息弱）。<strong>② 尺度由 L 决定</strong>：打印缩放 5%，距离就系统性偏差 5%。<strong>③ 单个标记视野小</strong>：遮挡即失效，远距角点像素精度下降。对应方案分别是：使用 <strong>ArUco Board / ChArUco 板</strong>联合多标记求解、实测打印边长、提高角点亚像素细化（<code>CORNER_REFINE_SUBPIX</code>）。
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section id="s6">
+    <h2><span class="num">06</span>可直接运行的代码</h2>
+    <div class="sec-line"></div>
+    <p>需要 <code>opencv-contrib-python</code>（ArUco 模块不在基础包内）。下列 API 对应 OpenCV 4.7+；旧版把 <code>ArucoDetector</code> 拆成 <code>detectMarkers()</code>、<code>drawMarker()</code> 称为 <code>generateImageMarker()</code>。</p>
+
+    <div class="code-head"><span>① 生成并打印一个标记</span><button class="ghost" data-copy="code1">复制</button></div>
+    <pre id="code1"><span class="k">import</span> cv2
+
+aruco = cv2.aruco
+DICT = aruco.getPredefinedDictionary(aruco.<span class="n">DICT_6X6_250</span>)
+<span class="c"># 新版：generateImageMarker；旧版：drawMarker</span>
+img = aruco.generateImageMarker(DICT, <span class="n">23</span>, <span class="n">400</span>, borderBits=<span class="n">1</span>)
+cv2.imwrite(<span class="s">"marker_23.png"</span>, img)
+<span class="c"># 打印时禁用「适应页面 / 缩放」，打印后实测边长（例如 0.080 m）</span></pre>
+
+    <div class="code-head"><span>② 检测 + 位姿估计</span><button class="ghost" data-copy="code2">复制</button></div>
+    <pre id="code2"><span class="k">import</span> cv2, numpy <span class="k">as</span> np
+
+aruco = cv2.aruco
+DICT    = aruco.getPredefinedDictionary(aruco.<span class="n">DICT_6X6_250</span>)
+params  = aruco.DetectorParameters()
+<span class="c"># 位姿应用建议开启亚像素细化</span>
+params.cornerRefinementMethod = aruco.<span class="n">CORNER_REFINE_SUBPIX</span>
+detector = aruco.ArucoDetector(DICT, params)
+
+<span class="c"># 相机标定结果（务必来自 calibrateCamera / ChArUco 标定）</span>
+K = np.array([[fx, <span class="n">0</span>, cx], [<span class="n">0</span>, fy, cy], [<span class="n">0</span>, <span class="n">0</span>, <span class="n">1</span>]], dtype=np.float64)
+dist = np.array([k1, k2, p1, p2, k3], dtype=np.float64)
+
+L = <span class="n">0.080</span>          <span class="c"># 打印后的实际边长，单位 m → tvec 也是 m</span>
+h = L / <span class="n">2</span>
+<span class="c"># 顺序必须与 detectMarkers 输出的 TL,TR,BR,BL 一致</span>
+obj_pts = np.array([[-h,-h,<span class="n">0</span>], [ h,-h,<span class="n">0</span>],
+                    [ h, h,<span class="n">0</span>], [-h, h,<span class="n">0</span>]], dtype=np.float32)
+
+frame = cv2.imread(<span class="s">"frame.png"</span>)
+gray  = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+corners, ids, rejected = detector.<span class="f">detectMarkers</span>(gray)
+
+<span class="k">if</span> ids <span class="k">is not None</span>:
+    aruco.drawDetectedMarkers(frame, corners, ids)
+    <span class="k">for</span> c <span class="k">in</span> corners:
+        img_pts = c.reshape(<span class="n">4</span>,<span class="n">2</span>).astype(np.float32)
+        ok, rvec, tvec = cv2.<span class="f">solvePnP</span>(obj_pts, img_pts, K, dist)
+        cv2.drawFrameAxes(frame, K, dist, rvec, tvec, <span class="n">0.05</span>)
+        <span class="c"># 距离 = np.linalg.norm(tvec)；姿态角 = Rodrigues(rvec) → R → Euler</span>
+        print(<span class="s">"distance(m) ="</span>, round(np.linalg.norm(tvec), <span class="n">3</span>))
+
+cv2.imwrite(<span class="s">"result.png"</span>, frame)</pre>
+
+    <div class="callout">
+      <span class="tag">等价简写</span>
+      <code>rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, L, K, dist)</code> 可替代手写 <code>obj_pts</code> 的循环（部分新版发行版中该函数已归入 <code>cv2.aruco</code> 或标记为弃用，若不可用按上方 <code>solvePnP</code> 写法最稳妥）。
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section id="s7">
+    <h2><span class="num">07</span>误差来源与工程清单</h2>
+    <div class="sec-line"></div>
+    <table>
+      <thead><tr><th style="width:23%">失败模式</th><th style="width:38%">机理</th><th>对策</th></tr></thead>
+      <tbody>
+        <tr><td>反光 / 强光梯度</td><td>黑格局部变白，自适应阈值分割出断裂轮廓</td><td>哑光打印、漫反射照明、避免覆膜；必要时调 <code>adaptiveThreshConstant</code></td></tr>
+        <tr><td>运动模糊</td><td>格边界糊成灰，多数投票翻转</td><td>缩短曝光、提高快门；全局快门相机优于卷帘快门</td></tr>
+        <tr><td>标记过小 / 过远</td><td>每格像素不足，重采样误差主导</td><td>增大打印尺寸或提高分辨率；经验上标记边长 ≥ 60–80 px</td></tr>
+        <tr><td>掠射角过大</td><td>四边形严重压缩，角点定位与 PnP 深度方向病态</td><td>控制视角 &lt; 60°；改用 Board 多标记联合解算</td></tr>
+        <tr><td>遮挡黑边</td><td>候选轮廓不再闭合，第一步即被丢弃</td><td>留足白色静区（quiet zone）；用 ChArUco / Diamond 抗部分遮挡</td></tr>
+        <tr><td>未标定 / 标定过期</td><td>K 与畸变不准，位姿系统性偏差，边缘尤甚</td><td>先做相机标定；变焦、换镜头、调焦后必须重标</td></tr>
+        <tr><td>打印缩放</td><td>L 与实际不符，距离按比例错</td><td>关闭「适合页面」，打印后卡尺实测</td></tr>
+        <tr><td>字典混用</td><td>生成与检测用了不同字典，ID 无意义或漏检</td><td>字典常量写入配置，生成端与检测端共用</td></tr>
+      </tbody>
+    </table>
+
+    <h3>落地检查顺序</h3>
+    <ul class="checklist">
+      <li><span class="ic">01</span><div><strong>先标定</strong>：用 ChArUco 板标定得到 K / dist，保存为配置文件。焦距改变后重标。</div></li>
+      <li><span class="ic">02</span><div><strong>再定量</strong>：实测打印边长 L，写入与 <code>tvec</code> 一致的单位，全程不混用 mm 与 m。</div></li>
+      <li><span class="ic">03</span><div><strong>选最小字典</strong>：按实际需要的 ID 数量选，优先 <code>*_50</code> 族以取得最大码距。</div></li>
+      <li><span class="ic">04</span><div><strong>验证可视化</strong>：用 <code>drawDetectedMarkers</code> + <code>drawFrameAxes</code> 目视检查角点顺序与坐标轴朝向是否自洽。</div></li>
+      <li><span class="ic">05</span><div><strong>静态测精度</strong>：把标记放在已知距离，比较 <code>‖tvec‖</code> 与实测值；再检查正对姿态下 rvec 是否稳定。</div></li>
+      <li class="warn"><span class="ic">06</span><div><strong>精度要求高时升级</strong>：单标记 + 亚像素细化通常只到厘米级（视距 1–2 m）；需要更高精度或抗遮挡，改用 ArUco Board / ChArUco。</div></li>
+    </ul>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section id="s8">
+    <h2><span class="num">08</span>在机器人与智能制造中的典型用法</h2>
+    <div class="sec-line"></div>
+    <div class="grid2">
+      <div class="tile"><div class="t">移动机器人 / AGV 定位</div><div class="d">天花板或墙面布置带已知世界坐标的标记，相机反解自身位姿，作为里程计漂移的绝对校正源。优点是成本低、无基础设施依赖；缺点是依赖视场覆盖。</div></div>
+      <div class="tile"><div class="t">机械臂手眼标定与抓取引导</div><div class="d">标记贴在工件托盘或夹具上，Eye-in-Hand / Eye-to-Hand 标定后，把目标位姿转换到机器人基坐标系，引导抓取与装配。</div></div>
+      <div class="tile"><div class="t">相机标定（ChArUco）</div><div class="d">棋盘格与 ArUco 的组合板：即使部分被遮挡、部分出画，仍能通过已知 ID 恢复对应关系，比传统棋盘格标定更省图、更鲁棒。</div></div>
+      <div class="tile"><div class="t">增材制造 / 装配对位</div><div class="d">在打印平台、工装或料盘上贴标记，用于平台平面度校验、多工位坐标系统一、以及视觉反馈下的闭环对位。</div></div>
+    </div>
+    <div class="callout key">
+      <span class="tag">选型建议</span>
+      教学演示与轻量定位：单标记 + <code>DICT_6X6_250</code> 即可。需要抗遮挡、高精度或大范围：优先 <strong>ArUco Board / ChArUco</strong>。追求更远距离、更强鲁棒性可评估 AprilTag（OpenCV 亦提供对应字典与 <code>CORNER_REFINE_APRILTAG</code>），但其编码与检测策略不同，不能直接与 ArUco 字典混用。
+    </div>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section id="s9">
+    <h2><span class="num">09</span>术语与参考</h2>
+    <div class="sec-line"></div>
+    <table>
+      <thead><tr><th style="width:26%">术语</th><th>含义</th></tr></thead>
+      <tbody>
+        <tr><td>Fiducial marker</td><td>人工基准标记：人为放置、几何与编码均已知，用于简化对应点匹配问题</td></tr>
+        <tr><td>Dictionary / 码字</td><td>预定义的合法二进制图案表；ID 是索引而非数值</td></tr>
+        <tr><td>Hamming distance</td><td>两个等长码字中不同位的个数；决定检错与纠错能力</td></tr>
+        <tr><td>Homography / 单应</td><td>平面到平面的 3×3 投影变换；4 对点可唯一确定（8 自由度）</td></tr>
+        <tr><td>PnP</td><td>Perspective-n-Point：由 3D–2D 对应求相机位姿；输出 rvec / tvec</td></tr>
+        <tr><td>rvec / tvec</td><td>旋转向量（Rodrigues 表示）与平移向量，共 6 自由度</td></tr>
+        <tr><td>ChArUco</td><td>棋盘格内嵌 ArUco 标记，兼具亚像素角点精度与 ID 可辨识性</td></tr>
+      </tbody>
+    </table>
+    <ol class="refs">
+      <li>OpenCV 4.x 官方文档：<em>ArUco markers and boards detection for robust camera pose estimation</em>（预定义字典规格、角点细化枚举）— docs.opencv.org/4.x/de/d67/group__objdetect__aruco.html</li>
+      <li>OpenCV 4.5 教程：<em>Detection of ArUco Markers</em>（候选检测、自适应阈值、透视校正、Otsu、纠错率、位姿估计参数与默认值）— docs.opencv.org/4.5.0/d5/dae/tutorial_aruco_detection.html</li>
+      <li>S. Garrido-Jurado, R. Muñoz-Salinas, F. J. Madrid-Cuevas, M. J. Marín-Jiménez, <em>Automatic generation and detection of highly reliable fiducial markers under occlusion</em>, Pattern Recognition 47(6), 2014, 2280–2292.</li>
+    </ol>
+    <div class="callout warn" style="margin-top:18px">
+      <span class="tag">关于本页演示的边界</span>
+      交互演示中的码字表、位翻转与单应变换均为<strong>教学用的真实算法实现</strong>（高斯消元解 H、逐像素逆映射、多数投票采样、汉明距离匹配），但使用的字典是本地生成的小型演示字典，<strong>不是</strong> OpenCV 预定义字典；也未模拟镜头畸变、噪声、抗锯齿与 Bayer 插值。因此演示结果用于说明<strong>机理</strong>，不能作为实际检测率或精度的量化依据。
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<footer>ArUco 原理交互讲解 · 单文件离线页面 · 依据 OpenCV 4.x 官方文档整理 ⚙️</footer>
+
+<script>
+(function(){
+'use strict';
+
+/* ==================== 通用工具 ==================== */
+const $ = s => document.querySelector(s);
+const el = (t,c,h) => { const e=document.createElement(t); if(c) e.className=c; if(h!==undefined) e.innerHTML=h; return e; };
+function makeRng(seed){ let s=seed>>>0; return ()=>{ s=(Math.imul(s,1664525)+1013904223)>>>0; return s/4294967296; }; }
+function hamming(a,b){ let d=0; for(let i=0;i<a.length;i++) if(a[i]!==b[i]) d++; return d; }
+
+/* ==================== SVG 网格绘制 ==================== */
+function gridSVG(n, bits, opts){
+  opts = opts || {};
+  const total = n+2, cell=30, pad=6, W=total*cell+pad*2;
+  let s = `<svg class="marker-svg" viewBox="0 0 ${W} ${W}" width="${Math.min(W,300)}" height="${Math.min(W,300)}" xmlns="http://www.w3.org/2000/svg">`;
+  s += `<rect x="0" y="0" width="${W}" height="${W}" fill="#ffffff"/>`;
+  for(let y=0;y<total;y++) for(let x=0;x<total;x++){
+    const border = (x===0||y===0||x===total-1||y===total-1);
+    const i=(y-1)*n+(x-1);
+    const v = border ? 1 : (bits[i]||0);
+    const px=pad+x*cell, py=pad+y*cell;
+    s += `<rect class="cell" data-i="${border?-1:i}" x="${px}" y="${py}" width="${cell}" height="${cell}" fill="${v?'#1c2733':'#ffffff'}" stroke="#c9d3df" stroke-width="0.8"/>`;
+    if(opts.flipped && opts.flipped.has(i) && !border){
+      s += `<rect x="${px+1.5}" y="${py+1.5}" width="${cell-3}" height="${cell-3}" fill="none" stroke="#c0392b" stroke-width="2.4" pointer-events="none"/>`;
+    }
+  }
+  s += `<circle cx="${pad+cell*1.0}" cy="${pad+cell*1.0}" r="4" fill="#c0392b" stroke="#fff" stroke-width="1.3" pointer-events="none"/>`;
+  s += `</svg>`;
+  return s;
+}
+function bitsText(bits,n){
+  let out='';
+  for(let y=0;y<n;y++){
+    let row=''; for(let x=0;x<n;x++) row += bits[y*n+x] ? '1 ':'0 ';
+    out += row.trimEnd()+'\n';
+  }
+  return out;
+}
+
+/* ==================== 交互 1：结构 ==================== */
+let structN=5, structBits=[];
+function structPattern(n){
+  const rng=makeRng(2026+n*97), a=[];
+  for(let i=0;i<n*n;i++) a.push(rng()<0.48?1:0);
+  return a;
+}
+function renderStruct(){
+  $('#struct-svg').innerHTML = gridSVG(structN, structBits);
+  $('#struct-bits').textContent = bitsText(structBits,structN);
+  $('#struct-info').textContent = `${structN}×${structN} 数据 + 1 圈黑边 = ${structN+2}×${structN+2}`;
+  $('#struct-svg').querySelectorAll('rect.cell').forEach(r=>{
+    r.addEventListener('click',()=>{
+      const i=+r.dataset.i; if(i<0) return;
+      structBits[i]^=1; renderStruct();
+    });
+  });
+}
+$('#size-seg').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-n]'); if(!b) return;
+  $('#size-seg').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); structN=+b.dataset.n; structBits=structPattern(structN); renderStruct();
+});
+$('#struct-reset').addEventListener('click',()=>{ structBits=structPattern(structN); renderStruct(); });
+structBits=structPattern(5); renderStruct();
+
+/* ==================== 交互 2：汉明距离 ==================== */
+const N=5, NB=N*N, DICT_N=8, MIN_DIST=4;
+function buildDict(){
+  const rng=makeRng(77123), d=[]; let guard=0;
+  while(d.length<DICT_N && guard<300000){
+    guard++;
+    const c=[]; for(let i=0;i<NB;i++) c.push(rng()<0.5?1:0);
+    let ok=true;
+    for(const q of d){ if(hamming(q,c)<MIN_DIST){ ok=false; break; } }
+    if(ok) d.push(c);
+  }
+  return d;
+}
+const DICT=buildDict();
+let DMIN=99;
+for(let i=0;i<DICT.length;i++) for(let j=i+1;j<DICT.length;j++) DMIN=Math.min(DMIN,hamming(DICT[i],DICT[j]));
+$('#dict-info').innerHTML = `教学用演示字典（${DICT.length} 个码字，实测 d<sub>min</sub> = ${DMIN}；本演示保守地只纠 1 位）`;
+let curId=2, flipped=new Set();
+const idSeg=$('#id-seg');
+DICT.forEach((_,i)=>{ const b=el('button',i===curId?'on':'',String(i)); b.dataset.id=i; idSeg.appendChild(b); });
+idSeg.addEventListener('click',e=>{
+  const b=e.target.closest('button[data-id]'); if(!b) return;
+  curId=+b.dataset.id; flipped.clear();
+  idSeg.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+  renderHam();
+});
+function readBits(){
+  const base=DICT[curId], a=base.slice();
+  flipped.forEach(i=>{ a[i]^=1; });
+  return a;
+}
+function renderHam(){
+  const read=readBits(), base=DICT[curId];
+  const ds=DICT.map((d,i)=>({i,d:hamming(d,read)}));
+  ds.sort((a,b)=>a.d-b.d);
+  const near=ds[0], second=ds[1];
+  $('#ham-svg').innerHTML = gridSVG(N, read, {flipped});
+  $('#ham-svg').querySelectorAll('rect.cell').forEach(r=>{
+    r.addEventListener('click',()=>{
+      const i=+r.dataset.i; if(i<0) return;
+      if(flipped.has(i)) flipped.delete(i); else flipped.add(i);
+      renderHam();
+    });
+  });
+  $('#st-flips').innerHTML=`<b>${flipped.size}</b>翻转位数`;
+  $('#st-near').innerHTML=`<b>${near.d}</b>最近码字距离 (ID ${near.i})`;
+  const ok = near.d<=1;
+  const st=$('#st-id');
+  st.className = ok?'good':'bad';
+  st.innerHTML = ok?`<b>${near.i}</b>识别结果 ID`:`<b>—</b>识别结果`;
+
+  let verdict,cls;
+  if(flipped.size===0){
+    cls='callout'; verdict='<span class="tag">精确匹配</span>读出码字与字典中的码字完全一致，汉明距离 0，ID 直接确定。';
+  } else if(near.d===0 && flipped.size>0){
+    cls='callout warn'; verdict=`<span class="tag">碰撞（演示字典中不会出现，但真实系统需警惕）</span>翻转后恰好等于字典中另一个码字 —— 这正是字典必须保证最小码距、并排除旋转等价的原因。`;
+  } else if(near.d===1){
+    cls='callout'; verdict=`<span class="tag">纠错成功</span>翻转 ${flipped.size} 位后，距 ID ${near.i} 仅 ${near.d} 位，次近码字 ID ${second.i} 距离 ${second.d} 位。<strong>最近者唯一</strong>，故可判定原码字为 ID ${near.i}，误码被纠正。实测最小码距 ${DMIN} 理论上允许纠 ${Math.floor((DMIN-1)/2)} 位，但本演示按 <strong>1 位</strong>保守执行 —— 与 OpenCV 用 <code>errorCorrectionRate</code> 主动压低纠错上限、抑制假阳性的做法一致。`;
+  } else {
+    cls='callout warn'; verdict=`<span class="tag">拒绝识别</span>最近码字距离 ${near.d} 位，已超出本演示设定的 1 位纠错上限（真实字典用 <code>errorCorrectionRate=0.6</code> 做类似限制）。OpenCV 在此会丢弃该候选而非猜一个 ID，以避免输出错误位姿造成误动作。`;
+  }
+  $('#ham-verdict').className=cls; $('#ham-verdict').innerHTML=verdict;
+
+  const maxD=Math.max(...ds.map(x=>x.d),8);
+  $('#ham-bars').innerHTML = ds.slice(0,8).map(x=>{
+    const w=Math.round(x.d/maxD*100);
+    const col = x.i===near.i ? '#2563eb' : '#b9c7d8';
+    return `<div style="display:flex;align-items:center;gap:8px;margin:3px 0">
+      <span style="font-family:var(--mono);width:52px;color:var(--ink-2)">ID ${x.i}</span>
+      <span style="flex:1;height:9px;background:#eef2f7;border-radius:5px;overflow:hidden;display:block">
+        <span style="display:block;height:100%;width:${w}%;background:${col};border-radius:5px"></span></span>
+      <span style="font-family:var(--mono);width:20px;text-align:right;color:var(--navy)">${x.d}</span></div>`;
+  }).join('');
+}
+$('#flip-reset').addEventListener('click',()=>{ flipped.clear(); renderHam(); });
+$('#flip-random').addEventListener('click',()=>randomFlip(1));
+$('#flip-random3').addEventListener('click',()=>randomFlip(3));
+function randomFlip(k){
+  flipped.clear();
+  while(flipped.size<k) flipped.add(Math.floor(Math.random()*NB));
+  renderHam();
+}
+renderHam();
+
+/* ==================== 交互 3：单应 / 透视链路 ==================== */
+/* 解 8 元线性方程组：src 四点 -> dst 四点，返回 3x3 行主序 H */
+function solveHomography(src,dst){
+  const A=[];
+  for(let i=0;i<4;i++){
+    const x=src[i][0],y=src[i][1],u=dst[i][0],v=dst[i][1];
+    A.push([x,y,1,0,0,0,-x*u,-y*u,u]);
+    A.push([0,0,0,x,y,1,-x*v,-y*v,v]);
+  }
+  const n=8;
+  for(let c=0;c<n;c++){
+    let p=c;
+    for(let r=c+1;r<n;r++) if(Math.abs(A[r][c])>Math.abs(A[p][c])) p=r;
+    if(Math.abs(A[p][c])<1e-12) return null;
+    const t=A[p]; A[p]=A[c]; A[c]=t;
+    const piv=A[c][c];
+    for(let j=c;j<=n;j++) A[c][j]/=piv;
+    for(let r=0;r<n;r++){
+      if(r===c) continue;
+      const f=A[r][c];
+      if(!f) continue;
+      for(let j=c;j<=n;j++) A[r][j]-=f*A[c][j];
+    }
+  }
+  const h=A.map(r=>r[n]);
+  return [h[0],h[1],h[2],h[3],h[4],h[5],h[6],h[7],1];
+}
+function applyH(H,x,y){
+  const w=H[6]*x+H[7]*y+H[8];
+  if(Math.abs(w)<1e-9) return null;
+  return [(H[0]*x+H[1]*y+H[2])/w,(H[3]*x+H[4]*y+H[5])/w];
+}
+/* 把 srcCanvas 按 dstQuad<->srcQuad 映射绘制到 dstCtx 的 W×H 画布 */
+function warp(srcCanvas,dstCtx,dstQuad,srcQuad,W,H,bg){
+  const Hm=solveHomography(dstQuad,srcQuad);
+  const out=dstCtx.createImageData(W,H);
+  const o=out.data;
+  const sc=document.createElement('canvas');
+  sc.width=srcCanvas.width; sc.height=srcCanvas.height;
+  const sctx=sc.getContext('2d',{willReadFrequently:true});
+  sctx.drawImage(srcCanvas,0,0);
+  const sd=sctx.getImageData(0,0,sc.width,sc.height).data;
+  const sw=sc.width,sh=sc.height;
+  const bgc=bg||[238,241,245];
+  if(!Hm){ for(let i=0;i<o.length;i+=4){o[i]=bgc[0];o[i+1]=bgc[1];o[i+2]=bgc[2];o[i+3]=255;} dstCtx.putImageData(out,0,0); return; }
+  for(let py=0;py<H;py++){
+    for(let px=0;px<W;px++){
+      const p=applyH(Hm,px+0.5,py+0.5);
+      const k=(py*W+px)*4;
+      let r=bgc[0],g=bgc[1],b=bgc[2];
+      if(p){
+        const sx=Math.floor(p[0]), sy=Math.floor(p[1]);
+        if(sx>=0&&sx<sw&&sy>=0&&sy<sh){
+          const si=(sy*sw+sx)*4;
+          r=sd[si]; g=sd[si+1]; b=sd[si+2];
+        }
+      }
+      o[k]=r;o[k+1]=g;o[k+2]=b;o[k+3]=255;
+    }
+  }
+  dstCtx.putImageData(out,0,0);
+}
+
+/* 5x5 教学码字，7x7 含黑边 */
+const PJ_BITS=[1,0,1,1,0, 0,1,1,0,1, 1,1,0,0,1, 0,0,1,1,0, 1,0,0,1,1];
+const SRC=280, CELLS=7;
+const srcCanvas=document.createElement('canvas'); srcCanvas.width=SRC; srcCanvas.height=SRC;
+(function(){
+  const c=srcCanvas.getContext('2d'); const s=SRC/CELLS;
+  c.fillStyle='#ffffff'; c.fillRect(0,0,SRC,SRC);
+  for(let y=0;y<CELLS;y++) for(let x=0;x<CELLS;x++){
+    const border=(x===0||y===0||x===CELLS-1||y===CELLS-1);
+    const v=border?1:PJ_BITS[(y-1)*5+(x-1)];
+    c.fillStyle=v?'#1c2733':'#ffffff';
+    c.fillRect(x*s,y*s,s+0.5,s+0.5);
+  }
+})();
+
+function projectQuad(rxDeg,ryDeg,scale){
+  const rx=rxDeg*Math.PI/180, ry=ryDeg*Math.PI/180;
+  const cx=Math.cos(rx),sx=Math.sin(rx),cy=Math.cos(ry),sy=Math.sin(ry);
+  const half=1.55*scale, D=5.5, F=430, C=180;
+  const corners=[[-half,-half],[half,-half],[half,half],[-half,half]];
+  return corners.map(([X,Y])=>{
+    // 绕 X 旋转
+    let y1=Y*cx, z1=Y*sx;
+    // 绕 Y 旋转
+    let x2=X*cy+z1*sy, z2=-X*sy+z1*cy;
+    const z=D+z2;
+    return [C+F*x2/z, C+F*y1/z];
+  });
+}
+function drawOverlay(quad){
+  const ov=$('#cam-ov'), c=ov.getContext('2d');
+  c.clearRect(0,0,ov.width,ov.height);
+  c.beginPath(); c.moveTo(quad[0][0],quad[0][1]);
+  for(let i=1;i<4;i++) c.lineTo(quad[i][0],quad[i][1]);
+  c.closePath(); c.strokeStyle='rgba(37,99,235,.85)'; c.lineWidth=1.6; c.setLineDash([5,4]); c.stroke(); c.setLineDash([]);
+  const cols=['#c0392b','#2563eb','#1b7f5c','#d2611c'], lab=['TL','TR','BR','BL'];
+  quad.forEach((p,i)=>{
+    c.beginPath(); c.arc(p[0],p[1],4.6,0,Math.PI*2);
+    c.fillStyle=cols[i]; c.fill(); c.strokeStyle='#fff'; c.lineWidth=1.6; c.stroke();
+    c.font='bold 11px monospace'; c.fillStyle=cols[i];
+    c.fillText(lab[i],p[0]+7,p[1]-5);
+  });
+}
+function drawSampleGrid(bits,failSet){
+  const n=5, s=26;
+  let svg=`<svg viewBox="0 0 ${n*s} ${n*s}" width="100%" style="max-width:190px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">`;
+  svg+=`<rect width="${n*s}" height="${n*s}" fill="#fff" stroke="#cfd8e3"/>`;
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+    const i=y*n+x, v=bits[i];
+    svg+=`<rect x="${x*s}" y="${y*s}" width="${s}" height="${s}" fill="${v?'#1c2733':'#fff'}" stroke="#c9d3df" stroke-width=".8"/>`;
+    if(failSet.has(i)) svg+=`<rect x="${x*s+1.5}" y="${y*s+1.5}" width="${s-3}" height="${s-3}" fill="none" stroke="#c0392b" stroke-width="2.2"/>`;
+    svg+=`<text x="${x*s+s/2}" y="${y*s+s/2+4}" text-anchor="middle" font-size="10" font-family="monospace" fill="${v?'#8fa3b8':'#8493a5'}">${v}</text>`;
+  }
+  svg+='</svg>';
+  $('#sample-grid').innerHTML=svg;
+}
+function renderPipeline(){
+  const rx=+$('#rx').value, ry=+$('#ry').value, sz=+$('#sz').value;
+  $('#rx-o').textContent=rx+'°'; $('#ry-o').textContent=ry+'°'; $('#sz-o').textContent=sz+'%';
+  const quad=projectQuad(rx,ry,sz/100);
+
+  // ① 相机图像：正方形 marker -> 四边形
+  const cam=$('#cam-cv'), camCtx=cam.getContext('2d',{willReadFrequently:true});
+  warp(srcCanvas,camCtx,quad,[[0,0],[SRC,0],[SRC,SRC],[0,SRC]],cam.width,cam.height,[238,241,245]);
+  drawOverlay(quad);
+
+  // ② 逆透视：相机图像四边形 -> 正方形
+  const R=210;
+  const rect=$('#rect-cv'), rctx=rect.getContext('2d',{willReadFrequently:true});
+  warp(cam,rctx,[[0,0],[R,0],[R,R],[0,R]],quad,R,R,[255,255,255]);
+  // 画网格辅助线
+  rctx.strokeStyle='rgba(37,99,235,.32)'; rctx.lineWidth=.7;
+  for(let i=0;i<=CELLS;i++){ const p=i*R/CELLS; rctx.beginPath(); rctx.moveTo(p,0); rctx.lineTo(p,R); rctx.stroke(); rctx.beginPath(); rctx.moveTo(0,p); rctx.lineTo(R,p); rctx.stroke(); }
+
+  // ③ 逐格多数投票（忽略 13% 边缘）
+  const id=rctx.getImageData(0,0,R,R).data, cell=R/CELLS, m=cell*0.13;
+  const read=[], fail=new Set();
+  for(let y=1;y<=5;y++) for(let x=1;x<=5;x++){
+    let black=0,total=0;
+    const x0=Math.ceil(x*cell+m), x1=Math.floor((x+1)*cell-m);
+    const y0=Math.ceil(y*cell+m), y1=Math.floor((y+1)*cell-m);
+    for(let py=y0;py<y1;py++) for(let px=x0;px<x1;px++){
+      const k=(py*R+px)*4;
+      if(id[k]<128) black++;
+      total++;
+    }
+    const v = total? (black>total/2?1:0) : 1;
+    read.push(v);
+    const i=(y-1)*5+(x-1);
+    if(v!==PJ_BITS[i]) fail.add(i);
+  }
+  drawSampleGrid(read,fail);
+  const d=hamming(read,PJ_BITS);
+  const span=Math.round(Math.max(...quad.map(p=>p[0]))-Math.min(...quad.map(p=>p[0])));
+  $('#pj-dist').innerHTML=`<b>${d}</b>与原始码字的汉明距离`;
+  $('#pj-dist').className = d===0?'good':'bad';
+  $('#pj-rot').innerHTML=`<b>${span}</b>四边形水平跨度 (px)`;
+  const ok = d<=1;
+  $('#pj-verdict').className= ok?'good':'bad';
+  $('#pj-verdict').innerHTML= ok?`<b>识别成功</b>原始码字 ID · 距离 ${d}`:`<b>识别失败</b>误码 ${d} 位`;
+  const note=$('#pj-note');
+  if(d===0){
+    note.className='callout';
+    note.innerHTML='<span class="tag">链路闭合</span>三维旋转投影 → 逆透视单应校正 → 忽略边缘的多数投票 → 得到与原始完全一致的 25 bit → 查字典得 ID → 四个角点送 <code>solvePnP</code>。当前参数下整条链路无误码。';
+  } else if(d<=1){
+    note.className='callout';
+    note.innerHTML=`<span class="tag">纠错接管</span>出现 ${d} 位误码，但仍在字典允许的单比特纠错范围内，匹配算法可以恢复正确 ID。真实 OpenCV 默认 <code>errorCorrectionRate=0.6</code>，通常比这里更保守。`;
+  } else {
+    note.className='callout warn';
+    note.innerHTML=`<span class="tag">链路退化</span>出现 ${d} 位误码，超出纠错能力，候选会被丢弃。成因：格子在图像中占比过小（当前水平跨度 ${span}px）叠加斜视重采样误差。改善方向：放大标记、缩短物距、减小倾角、开启亚像素角点细化。`;
+  }
+}
+['rx','ry','sz'].forEach(id=>$('#'+id).addEventListener('input',renderPipeline));
+$('#cam-reset').addEventListener('click',()=>{ $('#rx').value=22; $('#ry').value=-28; $('#sz').value=86; renderPipeline(); });
+renderPipeline();
+
+/* ==================== 流水线步骤 ==================== */
+const STEPS=[
+ {t:'自适应阈值化',s:'多尺度局部二值化',d:'把灰度图按局部窗口二值化，使光照梯度下的黑边仍完整闭合。默认窗口序列 3 → 13 → 23 px（min=3, max=23, step=10），每轮都独立提取候选。',p:'adaptiveThreshWinSizeMin / Max / Step / Constant (7)'},
+ {t:'轮廓提取',s:'findContours',d:'在每张二值图上提取轮廓。使用 RETR_LIST + CHAIN_APPROX_SIMPLE，保留所有层级以便后续统一过滤。',p:'—'},
+ {t:'方形筛选',s:'凸性 + 多边形近似',d:'丢弃非凸轮廓；用 approxPolyDP 近似，只保留 4 个顶点、面积与周长合理、角点间距足够的四边形。同时剔除过大/过小、彼此过近、贴图像边缘太近的候选。',p:'polygonalApproxAccuracyRate (0.05), minMarkerPerimeterRate (0.03), minDistanceToBorder (3)'},
+ {t:'透视归一化',s:'warpPerspective → 正方形',d:'由四个角点求单应矩阵 H，把候选四边形映射为规范正方形。默认每个 cell 取 4 像素，5×5 标记 + 1 圈黑边 → 28×28 像素的规范图。',p:'perspectiveRemovePixelPerCell (4), markerBorderBits (1)'},
+ {t:'Otsu + 逐格投票',s:'读出 n×n bit',d:'对规范图做 Otsu 二值化；按网格切 cell，统计每格黑白像素多数决定该位是 0 还是 1。统计时忽略 cell 边缘 13%，避开重采样造成的颜色渗透。若整图标准差过小（近乎全黑/全白）则直接全置 0 或 1。',p:'minOtsuStdDev (5.0), perspectiveRemoveIgnoredMarginPerCell (0.13)'},
+ {t:'字典匹配与纠错',s:'汉明距离 → ID + 朝向',d:'把读出的码字与字典逐一比较，取最小汉明距离；在允许的纠错位数内接受，否则丢弃。再用 4 个旋转版本确定原始朝向，重排角点为 TL→TR→BR→BL，并校验黑边为全黑。',p:'errorCorrectionRate (0.6), maxErroneousBitsInBorderRate (0.35)'},
+ {t:'角点亚像素细化',s:'可选 · 位姿必开',d:'在已识别的标记上用局部灰度梯度把角点精度提升到亚像素级。默认关闭（CORNER_REFINE_NONE），因为耗时；但只要后续要做位姿估计就应开启，否则角点 1 px 误差会直接放大成距离误差。',p:'CORNER_REFINE_SUBPIX, cornerRefinementWinSize (5), MaxIterations (30)'},
+ {t:'位姿解算',s:'solvePnP → rvec / tvec',d:'用已知边长构造 4 个三维角点，与图像角点配对，结合标定得到的 K 与 dist 求 6 自由度位姿。单标记即可求解；多标记联合请用 ArUco Board / ChArUco。',p:'markerLength, cameraMatrix, distCoeffs'}
+];
+const flow=$('#flow');
+STEPS.forEach((s,i)=>{
+  const d=el('div','step'+(i===0?' on':''),`<div class="n">STEP ${String(i+1).padStart(2,'0')}</div><div class="t">${s.t}</div><div class="s">${s.s}</div>`);
+  d.dataset.i=i; flow.appendChild(d);
+});
+function showStep(i){
+  flow.querySelectorAll('.step').forEach(x=>x.classList.toggle('on',+x.dataset.i===i));
+  const s=STEPS[i];
+  $('#flow-detail').innerHTML=`<h4>${String(i+1).padStart(2,'0')} · ${s.t} <span class="pill">${s.s}</span></h4><p>${s.d}</p><p style="margin-bottom:0"><span style="font-size:12.5px;color:var(--ink-3)">相关参数：</span><span class="param">${s.p}</span></p>`;
+}
+flow.addEventListener('click',e=>{ const d=e.target.closest('.step'); if(d) showStep(+d.dataset.i); });
+showStep(0);
+
+/* ==================== 复制代码 ==================== */
+document.querySelectorAll('[data-copy]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const t=$('#'+b.dataset.copy).innerText;
+    navigator.clipboard.writeText(t).then(()=>{ const o=b.textContent; b.textContent='已复制'; setTimeout(()=>b.textContent=o,1400); })
+      .catch(()=>{ b.textContent='请手动复制'; setTimeout(()=>b.textContent='复制',1400); });
+  });
+});
+
+/* ==================== 目录高亮 ==================== */
+const links=[...document.querySelectorAll('nav.toc a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+function onScroll(){
+  let idx=0;
+  secs.forEach((s,i)=>{ if(s && s.getBoundingClientRect().top<160) idx=i; });
+  links.forEach((a,i)=>a.classList.toggle('active',i===idx));
+}
+window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+})();
+</script>
+</body>
+</html>
